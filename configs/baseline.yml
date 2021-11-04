@@ -42,7 +42,7 @@ validation:
     scoring: "roc_auc"
 
 model:
-  type: "sklearn.linear_model.LogisticRegression"
-  params:
-    penalty: "l2"
-    C: 1.0
+  type: "sklearn.svm.SVC"
+#  params:
+#    penalty: "l2"
+#    C: 1.0

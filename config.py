@@ -82,7 +82,7 @@ def fit(**kwargs) -> ruamel.yaml.CommentedMap:
 def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
     kwargs = dict(d).copy()
     object_type = kwargs.pop("type")
-    params = kwargs.pop("params")
+    params = kwargs.pop("params", {})
 
     for name, value in default_kwargs.items():
         params.setdefault(name, value)
