@@ -63,7 +63,7 @@ def log_report(meta: dict) -> None:
     for name, value in meta["best_metrics"].items():
         print(f"{name} = {value}")
 
-    with open(meta.pop("exp_dir") / "meta.json", "w") as f:
+    with open(meta.pop("exp_dir") / "report.json", "w") as f:
         json.dump(meta, f, indent=4)
 
 
