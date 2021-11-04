@@ -29,3 +29,11 @@ do
                      --model.params.penalty="$penalty"
 done
 ```
+
+```shell
+for C in 1 2                                           
+do
+    python3 train.py --config=./configs/baseline.yml \
+                     --model.params.C $C
+done
+```

@@ -54,6 +54,8 @@ def update_config(config: ruamel.yaml.CommentedMap, params: dict):
 
         if path:
             for p in path:
+                if p not in updating_config:
+                    updating_config[p] = {}
                 updating_config = updating_config[p]
 
         updating_config.update({key: v})
