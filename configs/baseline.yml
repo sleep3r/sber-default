@@ -39,6 +39,7 @@ validation:
   mode: "holdout"
   params:
     test_size: 0.2
+    scoring: "roc_auc"
 
 model:
   type: "sklearn.linear_model.LogisticRegression"

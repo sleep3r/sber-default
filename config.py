@@ -34,7 +34,7 @@ class MLConfig:
     def __setitem__(self, key, value):
         return setattr(self.__cfg, key, value)
 
-    def pretty_print(self) -> str:
+    def pretty_print(self) -> None:
         yaml = ruamel.yaml.YAML()
         yaml.dump(self.__yaml_config, sys.stdout)
 
