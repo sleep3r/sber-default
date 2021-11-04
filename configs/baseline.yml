@@ -43,3 +43,6 @@ validation:
 
 model:
   type: "sklearn.linear_model.LogisticRegression"
+  params:
+    penalty: "l2"
+    C: 1.0

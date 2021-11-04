@@ -53,8 +53,9 @@ def update_config(config: ruamel.yaml.CommentedMap, params: dict):
         updating_config = config
 
         if path:
+            print(path)
             for p in path:
-                updating_config = config[p]
+                updating_config = updating_config[p]
 
         updating_config.update({key: v})
     return config
@@ -82,13 +83,14 @@ def fit(**kwargs) -> ruamel.yaml.CommentedMap:
 def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
     kwargs = dict(d).copy()
     object_type = kwargs.pop("type")
+    params = kwargs.pop("params")
 
     for name, value in default_kwargs.items():
-        kwargs.setdefault(name, value)
+        params.setdefault(name, value)
     if parent is not None:
-        return getattr(parent, object_type)(**kwargs)
+        return getattr(parent, object_type)(**params)
     else:
-        return pydoc.locate(object_type)(**kwargs)
+        return pydoc.locate(object_type)(**params)
 
 
 def load_config() -> MLConfig:
