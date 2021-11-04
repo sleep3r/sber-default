@@ -1,0 +1,24 @@
+exp_name: ""
+work_dir: ""
+seed: 1234
+
+dataset:
+  train_path: ""
+  test_path: ""
+
+preprocessing:
+  columns_to_drop: [ ]
+  drop_duplicates: true
+
+features:
+  selected: [ ]
+
+validation:
+  type:
+  params:
+    folds: 0
+
+model:
+  type:
+  params:
+    lr: 0.001
