@@ -1,6 +1,12 @@
 # sber-default
-Sberbank default hackathon solution 
 
+Sberbank default hackathon solution
+
+## Install:
+
+```bash
+pip install -U -r requirements.txt
+```
 
 ## Training:
 
