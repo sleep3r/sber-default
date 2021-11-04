@@ -1,3 +1,4 @@
+import json
 import os
 import random
 from datetime import datetime
@@ -29,7 +30,6 @@ def env_collect(cfg: MLConfig, meta: dict) -> dict:
     print('Environment info:\n' + dash_line + env_info + '\n' + dash_line)
 
     meta['env_info'] = env_info
-    meta['config'] = cfg.pretty_text
     return meta
 
 
@@ -55,13 +55,16 @@ def determine_exp(cfg: MLConfig, meta: dict) -> dict:
     return meta
 
 
-def log_report(meta: dict):
+def log_report(meta: dict) -> None:
     print("\nClassification report best model:")
     print(meta["best_metrics"].pop("clf_report"))
 
     print("Metrics:")
     for name, value in meta["best_metrics"].items():
         print(f"{name} = {value}")
+
+    with open(meta.pop("exp_dir") / "meta.json", "w") as f:
+        json.dump(meta, f, indent=4)
 
 
 def prepare_training(cfg: MLConfig) -> dict:
