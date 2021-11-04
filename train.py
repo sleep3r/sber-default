@@ -56,7 +56,10 @@ def determine_exp(cfg: MLConfig, meta: dict) -> dict:
 
 
 def log_report(meta: dict):
-    print('\n', meta["best_metrics"].pop("clf_report"), "\n")
+    print("\nClassification report best model:")
+    print(meta["best_metrics"].pop("clf_report"))
+
+    print("Metrics:")
     for name, value in meta["best_metrics"].items():
         print(f"{name} = {value}")
 
