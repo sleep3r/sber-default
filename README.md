@@ -8,12 +8,24 @@ Sberbank default hackathon solution
 
 ## Install:
 
-```bash
+```shell
 pip install -U -r requirements.txt
 ```
 
 ## Training:
 
-```bash
+```shell
 python3 train.py --config=./configs/baseline.yml
+```
+
+## Grid Training:
+
+```shell
+declare -a penaltyes=("l1" "l2") 
+
+for penalty in "${penaltyes[@]}"                                            
+do
+    python3 train.py --config=./configs/baseline.yml \
+                     --model.params.penalty="$penalty"
+done
 ```
