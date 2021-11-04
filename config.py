@@ -53,7 +53,6 @@ def update_config(config: ruamel.yaml.CommentedMap, params: dict):
         updating_config = config
 
         if path:
-            print(path)
             for p in path:
                 updating_config = updating_config[p]
 
