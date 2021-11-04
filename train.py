@@ -2,6 +2,7 @@ import os
 import random
 
 import numpy as np
+from tqdm import tqdm
 
 from config import load_config, MLConfig, object_from_dict
 from dataset import DefaultDataset
@@ -37,7 +38,7 @@ def set_random_seed(seed: int = 228):
 
 def determine_exp(cfg: MLConfig, meta: dict) -> dict:
     if cfg.seed is not None:
-        print(f'Set random seed to {cfg.seed}')
+        print(f'\nSet random seed to {cfg.seed}\n')
         set_random_seed(cfg.seed)
 
     meta['seed'] = cfg.seed
@@ -58,7 +59,7 @@ def prepare_training(cfg: MLConfig) -> dict:
     env_collect(cfg, meta)
 
     # log some basic info
-    print(f'Config:\n{cfg.pretty_text}')
+    cfg.pretty_print()
 
     # set random seeds
     determine_exp(cfg, meta)
@@ -68,21 +69,25 @@ def prepare_training(cfg: MLConfig) -> dict:
 def train_model(cfg: MLConfig):
     meta: dict = prepare_training(cfg)
 
+    print("Loading dataset...")
     dataset = DefaultDataset(cfg)
-    (X, y), X_test = dataset.data["train"], dataset.data["test"]
+    X, X_test = dataset.data["train"], dataset.data["test"]
 
+    print("Preprocessing dataset...")
     transformer = DefaultTransformer(cfg, X, X_test)
     preprocessed = transformer.transform()
-    X_preprocessed, X_test_preprocessed = preprocessed["train"], preprocessed["test"]
+    (X_preprocessed, y), X_test_preprocessed = preprocessed["train"], preprocessed["test"]
 
+    print("Generating features...")
     # feature selection
     # pass
 
+    print("Splitting dataset...")
     train_folds = get_train_folds(cfg, X_preprocessed, y)
 
+    print("Training...")
     model = object_from_dict(cfg.model)
-
-    for i, train_fold in enumerate(train_folds):
+    for i, train_fold in tqdm(enumerate(train_folds), total=len(train_folds)):
         X_train, y_train = train_fold[0]
         X_val, y_val = train_fold[1]
 

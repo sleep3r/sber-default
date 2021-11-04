@@ -1,3 +1,5 @@
+import sys
+
 import pydoc
 import ruamel.yaml
 from fire import Fire
@@ -32,6 +34,10 @@ class MLConfig:
     def __setitem__(self, key, value):
         return setattr(self.__cfg, key, value)
 
+    def pretty_print(self) -> str:
+        yaml = ruamel.yaml.YAML()
+        yaml.dump(self.__yaml_config, sys.stdout)
+
     def dump(self, path: str):
         yaml = ruamel.yaml.YAML()
 
@@ -50,7 +56,6 @@ def update_config(config: ruamel.yaml.CommentedMap, params: dict):
             for p in path:
                 updating_config = config[p]
 
-        print(f"Overwriting {k} = {v} (was {updating_config.get(key)})", "\n")
         updating_config.update({key: v})
     return config
 
@@ -73,8 +78,9 @@ def fit(**kwargs) -> ruamel.yaml.CommentedMap:
     update_cfg = update_config(merged_cfg, kwargs)
     return update_cfg
 
-def object_from_dict(d, parent=None, **default_kwargs):
-    kwargs = d.copy()
+
+def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
+    kwargs = dict(d).copy()
     object_type = kwargs.pop("type")
 
     for name, value in default_kwargs.items():
@@ -84,7 +90,8 @@ def object_from_dict(d, parent=None, **default_kwargs):
     else:
         return pydoc.locate(object_type)(**kwargs)
 
+
 def load_config() -> MLConfig:
-    yaml_config: ruamel.yaml.CommentedMap = Fire(fit)
+    yaml_config: ruamel.yaml.CommentedMap = fit(**Fire(lambda **kwargs: kwargs))
     cfg = MLConfig(yaml_config)
     return cfg
