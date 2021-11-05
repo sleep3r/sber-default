@@ -14,7 +14,7 @@ from config import load_config, MLConfig, object_from_dict
 from dataset import DefaultDataset
 from preprocessing import DefaultTransformer
 from features import DefaultGenerator, DefaultSelector
-from validation import get_train_folds, validate
+from validation import validate, BaseCV
 from utils.env import collect_env
 from utils.path import mkdir_or_exist
 
@@ -165,13 +165,19 @@ def train_model(cfg: MLConfig):
 
     try:
         print("crossval...")
-        cv = cross_validate(
-            object_from_dict(cfg.model), X_generated_preprocessed_selected.values, y,
-            cv=cfg.validation.n_folds, scoring=cfg.validation.scoring,
-            fit_params=fit_params
+        cv_params = cfg.validation.cv_params
+        cv = BaseCV(
+            cfg, X_generated_preprocessed_selected.values, y.values,
+            train_features=X_generated_preprocessed_selected.columns,
+            X_to_pred=X_test, out_metric=object_from_dict(cv_params.out_metric),
+            base_train_seed=cfg.seed, fold_seed=cv_params.fold_seed,
+            num_train_seeds=cv_params.num_train_seeds,
+            model_type=cv_params.model_type, model_params=cfg.model.params,
+            nfolds=cv_params.n_folds,
+            # k_fold_fn=GroupKFold, groups_for_split=df[train_has_fin]['seller_id'], cat_features=cat_features
         )
-        for metric in cfg.validation.scoring:
-            meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
+        result = cv.run()
+        print(result)
     except:
         print("CV failed")
 

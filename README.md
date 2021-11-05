@@ -20,7 +20,7 @@ python train.py --config=./configs/forest.yml \
                 --validation.cutoff=0.04
 ```
 
-## Grid Training:
+## Grid training from terminal:
 
 ```shell
 declare -a penaltyes=("l1" "l2") 

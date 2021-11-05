@@ -47,13 +47,6 @@ features:
                 'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
                 'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
 
-validation:
-  cutoff: 0.06
-  test_size: 0.2
-
-  scoring: [ "roc_auc", "f1", "balanced_accuracy" ]
-  n_folds: 5
-
 model:
   type: lightgbm.LGBMClassifier
   eval_set_param: "eval_set"
@@ -73,3 +66,16 @@ model:
   fit_params:
     early_stopping_rounds: 100
     verbose: false
+
+validation:
+  cutoff: 0.06
+  test_size: 0.2
+
+  cv_params:
+    fold_seed: 1
+    num_train_seeds: 3
+    nfolds: 5
+    out_metric:
+      type: 'sklearn.metrics.roc_auc_score'
+    model_type: 'lgb'
+
