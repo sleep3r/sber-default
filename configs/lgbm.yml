@@ -76,6 +76,6 @@ validation:
     num_train_seeds: 3
     nfolds: 5
     out_metric:
-      type: 'sklearn.metrics.roc_auc_score'
+      type: sklearn.metrics.roc_auc_score
     model_type: 'lgb'
 
