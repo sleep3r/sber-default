@@ -41,7 +41,7 @@ class BaseCV:
         self.X = X
         self.y = y
         self.train_features = train_features
-        self.X_to_pred = X_to_pred or pd.DataFrame()
+        self.X_to_pred = pd.DataFrame() if X_to_pred is None else X_to_pred
         self.y_for_split = y_for_split
         self.groups_for_split = groups_for_split
         self.weights = weights
@@ -50,7 +50,7 @@ class BaseCV:
         self.base_train_seed = base_train_seed
         self.num_train_seeds = num_train_seeds
         self.model_type = model_type
-        self.model_params = model_params or {}
+        self.model_params = {} if model_params is None else model_params
         self.k_fold_fn = k_fold_fn
         self.fold_seed = fold_seed
         self.nfolds = nfolds
@@ -61,7 +61,7 @@ class BaseCV:
         self.mask_name = mask_name
         self.train_kick_mask = train_kick_mask
         self.verbose = verbose
-        self.cat_features = cat_features or []
+        self.cat_features = [] if cat_features is None else cat_features
         self.fl_multiclass = fl_multiclass
 
     def run(self):
