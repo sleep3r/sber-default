@@ -154,8 +154,8 @@ def train_model(cfg: MLConfig):
     print("val...")
     fit_params = cfg.model.get("fit_params", {})
     model.fit(X_train.values, y_train, **fit_params)
-    preds = model.predict(X_val.values)
-    metrics = validate(preds=preds, y_val=y_val)
+    probas = model.predict_proba(X_val.values)
+    metrics = validate(probas=probas, y_val=y_val, cutoff=cfg.validation.cutoff)
     meta["metrics"] = metrics
 
     try:
