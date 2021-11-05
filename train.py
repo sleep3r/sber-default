@@ -77,7 +77,7 @@ def log_best_model(best_estimator, exp_dir: Path) -> None:
 def make_submit(model, X_preprocessed: pd.DataFrame, y, X_test_preprocessed, index: np.ndarray) -> pd.DataFrame:
     model.fit(X_preprocessed.values, y)
 
-    predict = (model.predict_proba(X_test_preprocessed.values)[:, 1] > y.mean()).astype(int)
+    predict = model.predict(X_test_preprocessed.values)
     answ_df = pd.DataFrame(index, columns=["id"])
     answ_df['predict'] = predict
     return answ_df
@@ -146,15 +146,19 @@ def train_model(cfg: MLConfig):
         stratify=y, test_size=cfg.validation.test_size, shuffle=True
     )
 
-    model.fit(X_train.values, y_train)
+    print("val...")
+    fit_params = cfg.model.get("fit_params", {})
+    model.fit(X_train.values, y_train, **fit_params)
     preds = model.predict(X_val.values)
     metrics = validate(preds=preds, y_val=y_val)
     meta["metrics"] = metrics
 
     try:
+        print("crossval...")
         cv = cross_validate(
             object_from_dict(cfg.model), X_preprocessed.values, y,
-            cv=cfg.validation.n_folds, scoring=cfg.validation.scoring
+            cv=cfg.validation.n_folds, scoring=cfg.validation.scoring,
+            fit_params=fit_params
         )
         for metric in cfg.validation.scoring:
             meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
