@@ -136,12 +136,13 @@ def train_model(cfg: MLConfig):
     metrics = validate(preds=preds, y_val=y_val)
     meta["metrics"] = metrics
 
-    if cfg.model.params.class_weight is None or cfg.model.params.class_weight == "balanced":
-        cv = cross_validate(
-            object_from_dict(cfg.model), X_preprocessed, y, cv=cfg.validation.n_folds, scoring=cfg.validation.scoring
-        )
-        for metric in cfg.validation.scoring:
-            meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
+    if cfg.model.params is not None:
+        if cfg.model.params.class_weight is None or cfg.model.params.class_weight == "balanced":
+            cv = cross_validate(
+                object_from_dict(cfg.model), X_preprocessed, y, cv=cfg.validation.n_folds, scoring=cfg.validation.scoring
+            )
+            for metric in cfg.validation.scoring:
+                meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
     best_estimator = model
 
     # submit = make_submit(best_estimator, X_test_preprocessed)

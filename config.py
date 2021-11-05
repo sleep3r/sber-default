@@ -94,7 +94,7 @@ def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
         try:
             return pydoc.locate(object_type)(**params)
         except:
-            raise ModuleNotFoundError(object_type)
+            raise ImportError("Check module installed and correct params for", object_type)
 
 
 def load_config() -> MLConfig:
