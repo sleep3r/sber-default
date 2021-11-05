@@ -15,7 +15,9 @@ pip install -U -r requirements.txt
 ## Training:
 
 ```shell
-python3 train.py --config=./configs/baseline.yml
+python train.py --config=./configs/forest.yml \
+                --work_dir=/home/sleep3r/sberruns \
+                --validation.cutoff=0.04
 ```
 
 ## Grid Training:
