@@ -178,7 +178,7 @@ def train_model(cfg: MLConfig):
         # k_fold_fn=GroupKFold, groups_for_split=df[train_has_fin]['seller_id'],
     )
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
-    meta["metrics"]["CV_scorw"] = cv_score.mean()
+    meta["metrics"]["CV_score"] = cv_score.mean()
 
     submit_df = make_submit(
         model, X_generated_preprocessed_selected, y, X_test_generated_preprocessed_selected,
