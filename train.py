@@ -168,7 +168,7 @@ def train_model(cfg: MLConfig):
     cv = BaseCV(
         cfg, X_generated_preprocessed_selected, y,
         train_features=X_generated_preprocessed_selected.columns,
-        X_to_pred=X_test, out_metric=object_from_dict(cv_params.out_metric),
+        X_to_pred=X_test_generated_preprocessed_selected, out_metric=object_from_dict(cv_params.out_metric),
         base_train_seed=cfg.seed, fold_seed=cv_params.fold_seed,
         num_train_seeds=cv_params.num_train_seeds,
         model_type=cv_params.model_type, model_params=cfg.model.params,
