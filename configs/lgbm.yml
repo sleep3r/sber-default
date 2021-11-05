@@ -1,0 +1,71 @@
+exp_name: "baseline"
+work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
+seed: 7771234
+
+dataset:
+  train_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-train.csv"
+  test_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-test.csv"
+
+  target_name: "default_12m"
+
+preprocessing:
+  drop_duplicates: true
+  drop_na: true
+  has_na: null
+  replace_inf: 0
+
+
+  cat_features: [ ]
+  cont_features: [ ]
+  skewed_features: [ ]
+  other_features: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
+                    'ab_cash_and_securities', 'ab_own_capital',
+                    'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
+                    'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
+  drop_features: [ "rating_id", "ul_systematizing_flg" ]
+
+  scaler:
+    type: "sklearn.preprocessing.RobustScaler"
+  imputer:
+    type: "sklearn.impute.SimpleImputer"
+    params:
+      strategy: "median"
+  encoder:
+    type: "sklearn.preprocessing.OneHotEncoder"
+    params:
+      handle_unknown: 'ignore'
+  normalizer:
+    type: "sklearn.preprocessing.QuantileTransformer"
+    params:
+      n_quantiles: 100
+      output_distribution: "normal"
+
+features:
+  selection:
+    selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
+                'ab_cash_and_securities', 'ab_own_capital',
+                'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
+                'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
+
+validation:
+  test_size: 0.2
+  scoring: [ "roc_auc", "f1", "balanced_accuracy" ]
+  n_folds: 5
+
+model:
+  type: lightgbm.LGBMClassifier
+  params:
+    boosting_type: gbdt
+    objective: binary
+    metric: binary
+    num_leaves: 32
+    max_depth: 6
+    learning_rate: 0.05
+    colsample_bytree: 0.8
+    subsample: 0.8
+    subsample_freq: 1
+    n_jobs: 6
+    n_estimators: 2000
+    min_child_samples: 100
+  fit_params:
+    early_stopping_rounds: 100
