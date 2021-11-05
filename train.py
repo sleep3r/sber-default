@@ -84,7 +84,6 @@ def log_artifacts(meta: dict, best_estimator, X: np.ndarray) -> None:
     log_report(meta, exp_dir)
     log_best_model(best_estimator, exp_dir)
     log_dataset(X, exp_dir)
-    make_submit()
 
 
 def prepare_training(cfg: MLConfig) -> dict:
