@@ -55,3 +55,4 @@ model:
   params:
     penalty: "l2"
     C: 1.0
+    max_iter: 1000
