@@ -11,7 +11,7 @@ dataset:
 preprocessing:
   drop_duplicates: true
   process_na: drop
-  col_has_na: null
+  has_na: null
   replace_inf: 0
 
 

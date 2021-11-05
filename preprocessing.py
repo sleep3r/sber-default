@@ -102,10 +102,12 @@ class DefaultTransformer:
 
         x_test = self.X_test.copy() if self.X_test is not None else None
 
-        if self.cfg.preprocessing.col_has_na:
-            x["col_has_na"] = x[self.cfg.preprocessing.col_has_na].isna()
+        if self.cfg.preprocessing.has_na:
+            x["has_na"] = 0
+            x.loc[self.X.isnull().any(1), "has_na"] = 1
             if x_test is not None:
-                x_test["col_has_na"] = x_test[self.cfg.preprocessing.col_has_na].isna()
+                x_test["has_na"] = 0
+                x_test.loc[self.X_test.isnull().any(1), "has_na"] = 1
 
         column_transformer = self._get_column_transformer()
         x, x_test = self._fit_transform(x, x_test, column_transformer)
