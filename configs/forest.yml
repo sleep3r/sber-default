@@ -10,7 +10,7 @@ dataset:
 
 preprocessing:
   drop_duplicates: true
-  drop_na: true
+  process_na: drop
   col_has_na: null
   replace_inf: 0
 
@@ -51,13 +51,13 @@ validation:
   test_size: 0.2
   scoring: [ "roc_auc", "f1", "balanced_accuracy" ]
   n_folds: 5
-  cutoff: 0.06
+  cutoff: 0.09
 
 model:
   type: sklearn.ensemble.RandomForestClassifier
   params:
     n_estimators: 120
-    class_weight: balanced
+    class_weight: null
     n_jobs: 4
     max_depth: 15
     criterion: gini

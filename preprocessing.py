@@ -89,8 +89,10 @@ class DefaultTransformer:
             self.X = self.X.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
-        if self.cfg.preprocessing.drop_na:
+        if self.cfg.preprocessing.process_na == "drop":
             self.X = self.X.dropna().copy()
+        elif self.cfg.preprocessing.process_na == "keep":
+            self.X = self.X[self.X.isnull().any(1)].copy()
 
         if self.cfg.preprocessing.drop_duplicates:
             x = self._drop_duplicates().drop(self.cfg.dataset.target_name, axis=1)

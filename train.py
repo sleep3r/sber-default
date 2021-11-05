@@ -4,6 +4,7 @@ import pickle
 import random
 from datetime import datetime
 from pathlib import Path
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -16,6 +17,8 @@ from features import DefaultGenerator, DefaultSelector
 from validation import get_train_folds, validate
 from utils.env import collect_env
 from utils.path import mkdir_or_exist
+
+warnings.simplefilter('ignore')
 
 
 def create_workdir(cfg: MLConfig, meta: dict) -> dict:
@@ -80,7 +83,7 @@ def make_submit(model, X: pd.DataFrame, y, X_test, index: np.ndarray, cutoff: fl
 
     predict = model.predict_proba(X_test.values)
     answ_df = pd.DataFrame(index, columns=["id"])
-    answ_df['predict'] = (predict[:,1] > cutoff).astype(int)
+    answ_df['predict'] = (predict[:, 1] > cutoff).astype(int)
     return answ_df
 
 
