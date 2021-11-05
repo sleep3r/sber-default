@@ -48,13 +48,15 @@ features:
                 'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
 
 validation:
+  cutoff: 0.06
   test_size: 0.2
+
   scoring: [ "roc_auc", "f1", "balanced_accuracy" ]
   n_folds: 5
-  cutoff: 0.06
 
 model:
   type: lightgbm.LGBMClassifier
+  eval_set_param: "eval_set"
   params:
     boosting_type: gbdt
     objective: binary
@@ -68,5 +70,5 @@ model:
     n_jobs: 6
     n_estimators: 2000
     min_child_samples: 100
-#  fit_params:
-#    early_stopping_rounds: 100
+  fit_params:
+    early_stopping_rounds: 100

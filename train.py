@@ -156,6 +156,8 @@ def train_model(cfg: MLConfig):
 
     print("val...")
     fit_params = cfg.model.get("fit_params", {})
+    if cfg.model.eval_set_param:
+        fit_params[cfg.model.eval_set_param] = [X_val, y_val]
     model.fit(X_train.values, y_train, **fit_params)
     probas = model.predict_proba(X_val.values)
     metrics = validate(probas=probas, y_val=y_val, cutoff=cfg.validation.cutoff)
