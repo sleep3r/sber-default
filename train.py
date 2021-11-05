@@ -173,10 +173,11 @@ def train_model(cfg: MLConfig):
         num_train_seeds=cv_params.num_train_seeds,
         model_type=cv_params.model_type, model_params=cfg.model.params,
         nfolds=cv_params.n_folds,
-        # k_fold_fn=GroupKFold, groups_for_split=df[train_has_fin]['seller_id'], cat_features=cat_features
+        cat_features=cfg.preprocessing.cat_features
+        # k_fold_fn=GroupKFold, groups_for_split=df[train_has_fin]['seller_id'],
     )
-    result = cv.run()
-    print(result)
+    cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
+    print(cv_score.mean())
 
     submit_df = make_submit(
         model, X_generated_preprocessed_selected, y, X_test_generated_preprocessed_selected,
