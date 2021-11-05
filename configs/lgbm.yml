@@ -72,3 +72,4 @@ model:
     min_child_samples: 100
   fit_params:
     early_stopping_rounds: 100
+    verbose: false
