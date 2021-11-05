@@ -126,10 +126,8 @@ def train_model(cfg: MLConfig):
     print("\nTraining...")
     model = object_from_dict(cfg.model)
 
-    X_train, X_val, y_train, y_val = train_test_split(
-        X_preprocessed, y,
-        stratify=y, test_size=cfg.validation.test_size
-    )
+    X_train, X_val, y_train, y_val = train_test_split(X_preprocessed, y,
+                                                      stratify=y, test_size=cfg.validation.test_size)
 
     model.fit(X_train, y_train)
     preds = model.predict(X_val)
