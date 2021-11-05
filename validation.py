@@ -23,9 +23,7 @@ def get_train_folds(cfg: MLConfig, X_preprocessed: pd.DataFrame, y: pd.Series) -
         raise NotImplementedError("WTF validation mode", cfg.validation.mode)
 
 
-def validate(
-        meta: dict, preds: np.ndarray, y_val: np.ndarray, fold_id: int
-) -> Dict[str, float]:
+def validate(preds: np.ndarray, y_val: np.ndarray) -> Dict[str, float]:
     metrics = {}
 
     metrics["clf_report"] = classification_report(y_val, preds)

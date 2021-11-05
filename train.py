@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import cross_val_score, cross_validate, train_test_split
 from tqdm import tqdm
 
 from config import load_config, MLConfig, object_from_dict
@@ -59,10 +60,10 @@ def determine_exp(cfg: MLConfig, meta: dict) -> dict:
 
 def log_report(meta: dict, exp_dir: Path) -> None:
     print("\nClassification report best model:")
-    print(meta["best_metrics"].pop("clf_report"))
+    print(meta["metrics"].pop("clf_report"))
 
     print("Metrics:")
-    for name, value in meta["best_metrics"].items():
+    for name, value in meta["metrics"].items():
         print(f"{name} = {value}")
 
     with open(exp_dir / "report.json", "w") as f:
@@ -122,25 +123,23 @@ def train_model(cfg: MLConfig):
     # feature selection
     # pass
 
-    print("\nSplitting dataset...")
-    train_folds = get_train_folds(cfg, X_preprocessed, y)
-
     print("\nTraining...")
     model = object_from_dict(cfg.model)
-    best_metric = 0
-    best_estimator = None
-    for i, train_fold in tqdm(enumerate(train_folds), total=len(train_folds)):
-        X_train, y_train = train_fold[0]
-        X_val, y_val = train_fold[1]
 
-        model.fit(X_train, y_train)
-        preds = model.predict(X_val)
-        metrics = validate(meta, preds=preds, y_val=y_val, fold_id=i)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_preprocessed, y,
+        stratify=y, test_size=cfg.validation.test_size
+    )
 
-        if metrics[cfg.validation.params.scoring] > best_metric:
-            best_estimator = model
-            best_metric = metrics[cfg.validation.params.scoring]
-            meta["best_metrics"] = metrics
+    model.fit(X_train, y_train)
+    preds = model.predict(X_val)
+    metrics = validate(preds=preds, y_val=y_val)
+    meta["metrics"] = metrics
+
+    cv = cross_validate(model, X_preprocessed, y, cv=cfg.validation.n_folds, scoring=cfg.validation.scoring)
+    for metric in cfg.validation.scoring:
+        meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
+    best_estimator = model
 
     # submit = make_submit(best_estimator, X_test_preprocessed)
     log_artifacts(meta, best_estimator, X_preprocessed)

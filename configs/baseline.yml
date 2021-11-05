@@ -1,6 +1,6 @@
 exp_name: "baseline"
 work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
-seed: 1234
+seed: 7771234
 
 dataset:
   train_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-train.csv"
@@ -16,33 +16,48 @@ preprocessing:
                    'ab_mobile_current_assets', 'ab_inventory', 'ab_accounts_receivable',
                    'ab_other_current_assets', 'ab_cash_and_securities', 'ab_losses', 'ab_own_capital',
                    'ab_borrowed_capital', 'ab_long_term_liabilities', 'ab_short_term_borrowing',
-                   'ab_accounts_payable', 'ab_other_borrowings', 'bus_age', 'ogrn_age', 'adr_actual_age',
+                   'ab_accounts_payable', 'ab_other_borrowings', "ar_selling_expenses", 'bus_age', 'ogrn_age', 'adr_actual_age',
                    'head_actual_age', 'cap_actual_age', 'ul_capital_sum', 'ul_founders_cnt',
                    'ul_branch_cnt' ]
-  skewed_features: [ "ar_selling_expenses" ]
-  other_features: [ "ul_strategic_flg" ]
-  drop_features: ["rating_id", "ul_systematizing_flg"]
+  skewed_features: [ 'ar_revenue', 'ar_total_expenses', 'ar_sale_cost',
+                     'ar_management_expenses', 'ar_sale_profit', 'ar_balance_of_rvns_and_expns', 'ar_profit_before_tax',
+                     'ar_taxes', 'ar_other_profit_and_losses', 'ar_net_profit', 'ab_immobilized_assets',
+                     'ab_mobile_current_assets', 'ab_inventory', 'ab_accounts_receivable',
+                     'ab_other_current_assets', 'ab_cash_and_securities', 'ab_losses', 'ab_own_capital',
+                     'ab_borrowed_capital', 'ab_long_term_liabilities', 'ab_short_term_borrowing',
+                     'ab_accounts_payable', 'ab_other_borrowings', "ar_selling_expenses" ]
+  other_features: [ "ul_strategic_flg", "has_na" ]
+  drop_features: [ "rating_id", "ul_systematizing_flg" ]
 
   drop_duplicates: true
+  has_na: "ar_revenue"
 
   scaler:
     type: "sklearn.preprocessing.RobustScaler"
   imputer:
     type: "sklearn.impute.SimpleImputer"
+    params:
+      strategy: "median"
+  encoder:
+    type: "sklearn.preprocessing.OneHotEncoder"
+    params:
+      handle_unknown: 'ignore'
   normalizer:
     type: "sklearn.preprocessing.QuantileTransformer"
+    params:
+      n_quantiles: 100
+      output_distribution: "normal"
 
 features:
   selected: [ ]
 
 validation:
-  mode: "holdout"
-  params:
-    test_size: 0.2
-    scoring: "roc_auc"
+  test_size: 0.2
+  scoring: ["roc_auc", "f1"]
+  n_folds: 5
 
 model:
   type: "sklearn.linear_model.LogisticRegression"
-#  params:
-#    penalty: "l2"
-#    C: 1.0
+  params:
+    penalty: "l2"
+    C: 1.0
