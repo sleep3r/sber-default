@@ -83,20 +83,22 @@ def make_submit(model, X_preprocessed, y, X_test_preprocessed, index: np.ndarray
     return answ_df
 
 
-def log_dataset(X: pd.DataFrame, exp_dir: Path) -> None:
-    X.to_csv(exp_dir / "data.csv", header=None, index=None)
+def log_dataset(X: pd.DataFrame, y, X_test, exp_dir: Path) -> None:
+    X["target"] = y
+    X.to_csv(exp_dir / "data_train.csv", index=None)
+    X_test.to_csv(exp_dir / "data_test.csv", index=None)
 
 
 def log_submit(submit_df: pd.DataFrame, exp_dir: Path) -> None:
     submit_df.to_csv(exp_dir / 'PD-submit.csv', index=False, sep=';')
 
 
-def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, submit_df: pd.DataFrame) -> None:
+def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, X_test, y, submit_df: pd.DataFrame) -> None:
     exp_dir = meta.pop("exp_dir")
 
     log_report(meta, exp_dir)
     log_best_model(best_estimator, exp_dir)
-    log_dataset(X, exp_dir)
+    log_dataset(X, y, X_test, exp_dir)
     log_submit(submit_df, exp_dir)
 
 
@@ -160,7 +162,7 @@ def train_model(cfg: MLConfig):
         print("CV failed")
 
     submit_df = make_submit(model, X_preprocessed, y, X_test_preprocessed, index=X_test.record_id.values)
-    log_artifacts(meta, model, X_preprocessed, submit_df)
+    log_artifacts(meta, model, X_preprocessed, X_test_preprocessed, y, submit_df)
 
 
 if __name__ == "__main__":
