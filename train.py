@@ -12,6 +12,7 @@ from sklearn.model_selection import cross_validate, train_test_split
 from config import load_config, MLConfig, object_from_dict
 from dataset import DefaultDataset
 from preprocessing import DefaultTransformer
+from features import DefaultGenerator, DefaultSelector
 from validation import get_train_folds, validate
 from utils.env import collect_env
 from utils.path import mkdir_or_exist
@@ -74,17 +75,17 @@ def log_best_model(best_estimator, exp_dir: Path) -> None:
         pickle.dump(best_estimator, f)
 
 
-def make_submit(model, X_preprocessed: pd.DataFrame, y, X_test_preprocessed, index: np.ndarray) -> pd.DataFrame:
-    model.fit(X_preprocessed.values, y)
+def make_submit(model, X: pd.DataFrame, y, X_test, index: np.ndarray) -> pd.DataFrame:
+    model.fit(X.values, y)
 
-    predict = model.predict(X_test_preprocessed.values)
+    predict = model.predict(X_test.values)
     answ_df = pd.DataFrame(index, columns=["id"])
     answ_df['predict'] = predict
     return answ_df
 
 
 def log_dataset(X: pd.DataFrame, y, X_test, exp_dir: Path) -> None:
-    X["target"] = y
+    X["target"] = y.values
     X.to_csv(exp_dir / "data_train.csv", index=None)
     X_test.to_csv(exp_dir / "data_test.csv", index=None)
 
@@ -129,20 +130,24 @@ def train_model(cfg: MLConfig):
     dataset = DefaultDataset(cfg)
     X, X_test = dataset.data["train"], dataset.data["test"]
 
-    print("\nPreprocessing dataset...")
-    transformer = DefaultTransformer(cfg, X, X_test)
-    preprocessed = transformer.transform()
-    (X_preprocessed, y), X_test_preprocessed = preprocessed["train"], preprocessed["test"]
-
     print("\nGenerating features...")
-    # feature selection
-    # pass
+    generator = DefaultGenerator(cfg, X, X_test)
+    X_generated, X_test_generated = generator.generate_features()
+
+    print("\nPreprocessing dataset...")
+    transformer = DefaultTransformer(cfg, X_generated, X_test_generated)
+    preprocessed = transformer.transform()
+    (X_generated_preprocessed, y), X_test_generated_preprocessed = preprocessed["train"], preprocessed["test"]
+
+    print("\nSelecting features...")
+    selector = DefaultSelector(cfg, X_generated_preprocessed, X_test_generated_preprocessed)
+    X_generated_preprocessed_selected, X_test_generated_preprocessed_selected = selector.select_features()
 
     print("\nTraining...")
     model = object_from_dict(cfg.model)
 
     X_train, X_val, y_train, y_val = train_test_split(
-        X_preprocessed, y,
+        X_generated_preprocessed_selected, y,
         stratify=y, test_size=cfg.validation.test_size, shuffle=True
     )
 
@@ -156,7 +161,7 @@ def train_model(cfg: MLConfig):
     try:
         print("crossval...")
         cv = cross_validate(
-            object_from_dict(cfg.model), X_preprocessed.values, y,
+            object_from_dict(cfg.model), X_generated_preprocessed_selected.values, y,
             cv=cfg.validation.n_folds, scoring=cfg.validation.scoring,
             fit_params=fit_params
         )
@@ -165,8 +170,13 @@ def train_model(cfg: MLConfig):
     except:
         print("CV failed")
 
-    submit_df = make_submit(model, X_preprocessed, y, X_test_preprocessed, index=X_test.record_id.values)
-    log_artifacts(meta, model, X_preprocessed, X_test_preprocessed, y, submit_df)
+    submit_df = make_submit(
+        model, X_generated_preprocessed_selected, y, X_test_generated_preprocessed_selected,
+        index=X_test.record_id.values
+    )
+    log_artifacts(
+        meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, submit_df
+    )
 
 
 if __name__ == "__main__":
