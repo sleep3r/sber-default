@@ -1,5 +1,5 @@
 exp_name: "baseline"
-work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
+work_dir: "/home/sleep3r/sber-default/runs"
 seed: 7771234
 
 dataset:
@@ -50,10 +50,17 @@ validation:
   n_folds: 5
 
 model:
-  type: "sklearn.ensemble.RandomForestClassifier"
+  type: "lightgbm.LGBMClassifier"
   params:
-    n_estimators: 120
-    class_weight: null
-    n_jobs: 4
-    max_depth: 15
-    criterion: 'gini'
+    boosting_type: 'gbdt'
+    objective: 'binary'
+    metric: "binary"
+    num_leaves: 32
+    max_depth: 6
+    learning_rate: 0.05
+    colsample_bytree: 0.8
+    subsample: 0.8
+    subsample_freq: 1
+    n_jobs: 6
+    n_estimators: 2000
+    min_child_samples: 100

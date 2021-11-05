@@ -74,10 +74,10 @@ def log_best_model(best_estimator, exp_dir: Path) -> None:
         pickle.dump(best_estimator, f)
 
 
-def make_submit(model, X_preprocessed, y, X_test_preprocessed, index: np.ndarray) -> pd.DataFrame:
-    model.fit(X_preprocessed, y)
+def make_submit(model, X_preprocessed: pd.DataFrame, y, X_test_preprocessed, index: np.ndarray) -> pd.DataFrame:
+    model.fit(X_preprocessed.values, y)
 
-    predict = (model.predict_proba(X_test_preprocessed)[:, 1] > y.mean()).astype(int)
+    predict = (model.predict_proba(X_test_preprocessed.values)[:, 1] > y.mean()).astype(int)
     answ_df = pd.DataFrame(index, columns=["id"])
     answ_df['predict'] = predict
     return answ_df
@@ -146,14 +146,14 @@ def train_model(cfg: MLConfig):
         stratify=y, test_size=cfg.validation.test_size, shuffle=True
     )
 
-    model.fit(X_train, y_train)
-    preds = model.predict(X_val)
+    model.fit(X_train.values, y_train)
+    preds = model.predict(X_val.values)
     metrics = validate(preds=preds, y_val=y_val)
     meta["metrics"] = metrics
 
     try:
         cv = cross_validate(
-            object_from_dict(cfg.model), X_preprocessed, y,
+            object_from_dict(cfg.model), X_preprocessed.values, y,
             cv=cfg.validation.n_folds, scoring=cfg.validation.scoring
         )
         for metric in cfg.validation.scoring:
