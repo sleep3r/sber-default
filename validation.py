@@ -105,8 +105,9 @@ class BaseCV:
 
         cat_feats_ind = [i for i, j in enumerate(self.train_features) if j in self.cat_features]
 
+        self.X["ID"] = self.X.reset_index(drop=True).index
         train_predictions = pd.DataFrame()
-        train_predictions['ID'] = np.array(self.X['ID'])
+        train_predictions['ID'] = self.X['ID'].values
         test_predictions = pd.DataFrame([], columns=['ID', 'predictions'])
         if not self.X_to_pred.empty:
             test_predictions['ID'] = np.array(self.X_to_pred['ID'])
