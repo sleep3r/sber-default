@@ -1,10 +1,12 @@
 import json
 import os
+import pickle
 import random
 from datetime import datetime
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 
 from config import load_config, MLConfig, object_from_dict
@@ -55,7 +57,7 @@ def determine_exp(cfg: MLConfig, meta: dict) -> dict:
     return meta
 
 
-def log_report(meta: dict) -> None:
+def log_report(meta: dict, exp_dir: Path) -> None:
     print("\nClassification report best model:")
     print(meta["best_metrics"].pop("clf_report"))
 
@@ -63,8 +65,26 @@ def log_report(meta: dict) -> None:
     for name, value in meta["best_metrics"].items():
         print(f"{name} = {value}")
 
-    with open(meta.pop("exp_dir") / "report.json", "w") as f:
+    with open(exp_dir / "report.json", "w") as f:
         json.dump(meta, f, indent=4)
+
+
+def log_best_model(best_estimator, exp_dir: Path) -> None:
+    with open(exp_dir / "best.pkl", "wb") as f:
+        pickle.dump(best_estimator, f)
+
+
+def log_dataset(X: np.ndarray, exp_dir: Path) -> None:
+    pd.DataFrame(X).to_csv(exp_dir / "data.csv", header=None, index=None)
+
+
+def log_artifacts(meta: dict, best_estimator, X: np.ndarray) -> None:
+    exp_dir = meta.pop("exp_dir")
+
+    log_report(meta, exp_dir)
+    log_best_model(best_estimator, exp_dir)
+    log_dataset(X, exp_dir)
+    make_submit()
 
 
 def prepare_training(cfg: MLConfig) -> dict:
@@ -123,7 +143,8 @@ def train_model(cfg: MLConfig):
             best_metric = metrics[cfg.validation.params.scoring]
             meta["best_metrics"] = metrics
 
-    log_report(meta)
+    # submit = make_submit(best_estimator, X_test_preprocessed)
+    log_artifacts(meta, best_estimator, X_preprocessed)
 
 
 if __name__ == "__main__":
