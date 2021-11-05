@@ -26,6 +26,7 @@ preprocessing:
 
   scaler:
     type: "sklearn.preprocessing.RobustScaler"
+    params: {}
   imputer:
     type: "sklearn.impute.SimpleImputer"
     params:
