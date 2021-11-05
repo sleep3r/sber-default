@@ -166,7 +166,7 @@ def train_model(cfg: MLConfig):
     print("crossval...")
     cv_params = cfg.validation.cv_params
     cv = BaseCV(
-        cfg, X_generated_preprocessed_selected.values, y.values,
+        cfg, X_generated_preprocessed_selected, y,
         train_features=X_generated_preprocessed_selected.columns,
         X_to_pred=X_test, out_metric=object_from_dict(cv_params.out_metric),
         base_train_seed=cfg.seed, fold_seed=cv_params.fold_seed,
