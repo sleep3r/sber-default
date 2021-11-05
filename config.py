@@ -1,7 +1,7 @@
 import sys
 import pydoc
 
-import ruamel.yaml
+from ruamel.yaml import YAML, CommentedMap
 from fire import Fire
 from addict import Dict
 
@@ -21,7 +21,7 @@ class MLConfig:
         yaml_config (ruamel.yaml.CommentedMap): safe loaded with ruamel yaml config.
     """
 
-    def __init__(self, yaml_config: ruamel.yaml.CommentedMap):
+    def __init__(self, yaml_config: CommentedMap):
         self.__yaml_config = yaml_config
         self.__cfg = CfgDict(yaml_config)
 
@@ -35,17 +35,17 @@ class MLConfig:
         return setattr(self.__cfg, key, value)
 
     def pretty_print(self) -> None:
-        yaml = ruamel.yaml.YAML()
+        yaml = YAML()
         yaml.dump(self.__yaml_config, sys.stdout)
 
     def dump(self, path: str):
-        yaml = ruamel.yaml.YAML()
+        yaml = YAML()
 
         with open(path, "w") as f:
             yaml.dump(self.__yaml_config, f)
 
 
-def update_config(config: ruamel.yaml.CommentedMap, params: dict):
+def update_config(config: CommentedMap, params: dict):
     """Updates base config with params from new one --config and some specified --params."""
     for k, v in params.items():
         *path, key = k.split(".")
@@ -62,9 +62,9 @@ def update_config(config: ruamel.yaml.CommentedMap, params: dict):
     return config
 
 
-def fit(**kwargs) -> ruamel.yaml.CommentedMap:
+def fit(**kwargs) -> CommentedMap:
     """Loads base config and updates it with specified new one --config with some others --params."""
-    yaml = ruamel.yaml.YAML()
+    yaml = YAML()
 
     with open("configs/base.yml", "r") as f:
         base_config = yaml.load(f)
@@ -98,6 +98,6 @@ def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
 
 
 def load_config() -> MLConfig:
-    yaml_config: ruamel.yaml.CommentedMap = fit(**Fire(lambda **kwargs: kwargs))
+    yaml_config: CommentedMap = fit(**Fire(lambda **kwargs: kwargs))
     cfg = MLConfig(yaml_config)
     return cfg

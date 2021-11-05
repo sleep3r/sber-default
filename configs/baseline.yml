@@ -50,10 +50,10 @@ validation:
   n_folds: 5
 
 model:
-  type: "lightgbm.LGBMClassifier"
-#  params:
-#    penalty: "l2"
-#    C: 10.0
-#    max_iter: 1000
-#    class_weight: "balanced"
-#    multi_class: "ovr"
+  type: "sklearn.linear_model.LogisticRegression"
+  params:
+    penalty: "l2"
+    C: 10.0
+    max_iter: 1000
+    class_weight: "balanced"
+    multi_class: "ovr"
