@@ -53,7 +53,7 @@ model:
   type: "sklearn.ensemble.RandomForestClassifier"
   params:
     n_estimators: 120
-    class_weight: "balanced"
+    class_weight: null
     n_jobs: 4
     max_depth: 15
     criterion: 'gini'

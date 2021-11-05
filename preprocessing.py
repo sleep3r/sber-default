@@ -27,7 +27,8 @@ def get_column_names_from_ColumnTransformer(column_transformer):
         try:
             if isinstance(transformer, OneHotEncoder):
                 names = list(transformer.get_feature_names(raw_col_name))
-            elif isinstance(transformer, SimpleImputer) and transformer.add_indicator:
+            elif isinstance(transformer, SimpleImputer) or isinstance(transformer, KNNImputer) \
+                    and transformer.add_indicator:
                 missing_indicator_indices = transformer.indicator_.features_
                 missing_indicators = [raw_col_name[idx] + '_missing_flag' for idx in missing_indicator_indices]
                 names = raw_col_name + missing_indicators
