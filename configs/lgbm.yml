@@ -75,7 +75,7 @@ validation:
   cv_params:
     fold_seed: 1
     num_train_seeds: 3
-    nfolds: 5
+    n_folds: 5
     out_metric:
       type: sklearn.metrics.roc_auc_score
     model_type: 'lgb'
