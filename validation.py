@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score, classification_report, accuracy_score, precision_score, recall_score, \
     f1_score, balanced_accuracy_score
 from sklearn.model_selection import StratifiedKFold, GroupKFold
+import lightgbm
 
 from config import MLConfig
 
@@ -182,11 +183,11 @@ class BaseCV:
 
                 if self.model_type == 'lgb':
                     if self.use_saved_model:
-                        model = self.lightgbm.Booster(model_file=model_full_name)
+                        model = lightgbm.Booster(model_file=model_full_name)
                         best_iter = -1
                     else:
                         self.model_params['categorical_column'] = cat_feats_ind
-                        model = self.lightgbm.LGBMModel(**self.model_params)
+                        model = lightgbm.LGBMModel(**self.model_params)
                         model.random_state = train_seed
                         e_stop = round(5 / model.get_params()['learning_rate'])
 
