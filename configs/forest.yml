@@ -51,7 +51,7 @@ validation:
   test_size: 0.2
   scoring: [ "roc_auc", "f1", "balanced_accuracy" ]
   n_folds: 5
-  cutoff: 0.09
+  cutoff: 0.05
 
 model:
   type: sklearn.ensemble.RandomForestClassifier

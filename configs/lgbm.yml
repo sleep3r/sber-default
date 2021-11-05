@@ -68,5 +68,5 @@ model:
     n_jobs: 6
     n_estimators: 2000
     min_child_samples: 100
-  fit_params:
-    early_stopping_rounds: 100
+#  fit_params:
+#    early_stopping_rounds: 100
