@@ -79,5 +79,5 @@ validation:
     out_metric:
       type: sklearn.metrics.roc_auc_score
     model_type: 'lgb'
-    verbose: falae
+    verbose: false
 
