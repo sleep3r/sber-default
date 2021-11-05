@@ -50,6 +50,10 @@ validation:
   n_folds: 5
 
 model:
-  type: "sklearn.tree.DecisionTreeClassifier"
+  type: "sklearn.ensemble.RandomForestClassifier"
   params:
+    n_estimators: 120
     class_weight: "balanced"
+    n_jobs: 4
+    max_depth: 15
+    criterion: 'gini'

@@ -7,8 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import cross_val_score, cross_validate, train_test_split
-from tqdm import tqdm
+from sklearn.model_selection import cross_validate, train_test_split
 
 from config import load_config, MLConfig, object_from_dict
 from dataset import DefaultDataset
@@ -19,7 +18,7 @@ from utils.path import mkdir_or_exist
 
 
 def create_workdir(cfg: MLConfig, meta: dict) -> dict:
-    dirname = f"{cfg.exp_name}_{datetime.now().strftime('%d.%m/%H:%M:%S')}"
+    dirname = f"{cfg.exp_name}_{datetime.now().strftime('%d.%m/%H.%M.%S')}"
     meta["exp_dir"] = Path(cfg.work_dir) / dirname
     mkdir_or_exist(meta["exp_dir"])
     return meta
@@ -75,16 +74,30 @@ def log_best_model(best_estimator, exp_dir: Path) -> None:
         pickle.dump(best_estimator, f)
 
 
-def log_dataset(X: np.ndarray, exp_dir: Path) -> None:
-    pd.DataFrame(X).to_csv(exp_dir / "data.csv", header=None, index=None)
+def make_submit(model, X_preprocessed, y, X_test_preprocessed, index: np.ndarray) -> pd.DataFrame:
+    model.fit(X_preprocessed, y)
+
+    predict = (model.predict_proba(X_test_preprocessed)[:, 1] > y.mean()).astype(int)
+    answ_df = pd.DataFrame(index, columns=["id"])
+    answ_df['predict'] = predict
+    return answ_df
 
 
-def log_artifacts(meta: dict, best_estimator, X: np.ndarray) -> None:
+def log_dataset(X: pd.DataFrame, exp_dir: Path) -> None:
+    X.to_csv(exp_dir / "data.csv", header=None, index=None)
+
+
+def log_submit(submit_df: pd.DataFrame, exp_dir: Path) -> None:
+    submit_df.to_csv(exp_dir / 'PD-submit.csv', index=False, sep=';')
+
+
+def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, submit_df: pd.DataFrame) -> None:
     exp_dir = meta.pop("exp_dir")
 
     log_report(meta, exp_dir)
     log_best_model(best_estimator, exp_dir)
     log_dataset(X, exp_dir)
+    log_submit(submit_df, exp_dir)
 
 
 def prepare_training(cfg: MLConfig) -> dict:
@@ -136,17 +149,18 @@ def train_model(cfg: MLConfig):
     metrics = validate(preds=preds, y_val=y_val)
     meta["metrics"] = metrics
 
-    if cfg.model.params is not None:
-        if cfg.model.params.class_weight is None or cfg.model.params.class_weight == "balanced":
-            cv = cross_validate(
-                object_from_dict(cfg.model), X_preprocessed, y, cv=cfg.validation.n_folds, scoring=cfg.validation.scoring
-            )
-            for metric in cfg.validation.scoring:
-                meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
-    best_estimator = model
+    try:
+        cv = cross_validate(
+            object_from_dict(cfg.model), X_preprocessed, y,
+            cv=cfg.validation.n_folds, scoring=cfg.validation.scoring
+        )
+        for metric in cfg.validation.scoring:
+            meta["metrics"][f"CV_{cfg.validation.n_folds}_{metric}"] = cv[f"test_{metric}"].mean()
+    except:
+        print("CV failed")
 
-    # submit = make_submit(best_estimator, X_test_preprocessed)
-    log_artifacts(meta, best_estimator, X_preprocessed)
+    submit_df = make_submit(model, X_preprocessed, y, X_test_preprocessed, index=X_test.record_id.values)
+    log_artifacts(meta, model, X_preprocessed, submit_df)
 
 
 if __name__ == "__main__":
