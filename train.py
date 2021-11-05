@@ -173,7 +173,8 @@ def train_model(cfg: MLConfig):
         num_train_seeds=cv_params.num_train_seeds,
         model_type=cv_params.model_type, model_params=cfg.model.params,
         nfolds=cv_params.n_folds,
-        cat_features=cfg.preprocessing.cat_features
+        cat_features=cfg.preprocessing.cat_features,
+        verbose=cv_params.verbose
         # k_fold_fn=GroupKFold, groups_for_split=df[train_has_fin]['seller_id'],
     )
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
