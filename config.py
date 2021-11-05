@@ -91,7 +91,10 @@ def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
     if parent is not None:
         return getattr(parent, object_type)(**params)
     else:
-        return pydoc.locate(object_type)(**params)
+        try:
+            return pydoc.locate(object_type)(**params)
+        except:
+            raise ModuleNotFoundError(object_type)
 
 
 def load_config() -> MLConfig:
