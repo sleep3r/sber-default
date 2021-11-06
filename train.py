@@ -8,7 +8,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import cross_validate, train_test_split, GroupKFold
+from sklearn.model_selection import train_test_split
 
 from config import load_config, MLConfig, object_from_dict
 from dataset import DefaultDataset
