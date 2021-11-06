@@ -1,6 +1,6 @@
-exp_name: "baseline"
+exp_name: "lgbm_nofin"
 work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
-seed: 7771234
+seed: 45657
 
 dataset:
   train_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-train.csv"
@@ -8,12 +8,21 @@ dataset:
 
   target_name: "default_12m"
 
-preprocessing:
-  drop_duplicates: true
-  process_na: drop
-  has_na: null
-  replace_inf: 0
 
+features:
+  generation: # (!!!) don't forget to add generated columns to preprocessing
+    has_na: null # adds has_na column if true
+    duplicates: group # adds duplicates_group if group
+    mark_fin: null # adds has_fin by no nan rows of column specified
+    mark_nofin: ar_revenue # adds no_fin by nan rows of column specified
+
+  selection:
+    selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'adr_actual_age' ]
+
+preprocessing:
+  replace_inf: null
+  process_na: null # drop to drop or group to keep only na or null to do nothing
+  select_rows: has_fin # selects only rows if selected col is true
 
   cat_features: [ ]
   cont_features: [ ]
@@ -21,11 +30,13 @@ preprocessing:
   other_features: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
                     'ab_cash_and_securities', 'ab_own_capital',
                     'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-                    'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
-  drop_features: [ "rating_id", "ul_systematizing_flg" ]
+                    'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
+                    'duplicates_group', "no_fin" ]
+  drop_features: [ "record_id", ]
 
   scaler:
     type: "sklearn.preprocessing.RobustScaler"
+    params: { }
   imputer:
     type: "sklearn.impute.SimpleImputer"
     params:
@@ -40,21 +51,9 @@ preprocessing:
       n_quantiles: 100
       output_distribution: "normal"
 
-features:
-  selection:
-    selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
-                'ab_cash_and_securities', 'ab_own_capital',
-                'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-                'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
-
-validation:
-  test_size: 0.2
-  scoring: [ "roc_auc", "f1", "balanced_accuracy" ]
-  n_folds: 5
-  cutoff: 0.06
-
 model:
   type: lightgbm.LGBMClassifier
+  eval_set_param: "eval_set"
   params:
     boosting_type: gbdt
     objective: binary
@@ -70,3 +69,20 @@ model:
     min_child_samples: 100
   fit_params:
     early_stopping_rounds: 100
+    verbose: false
+
+validation:
+  cutoff: 0.06
+  test_size: 0.2
+
+  cv_params:
+    verbose: true
+    fold_seed: 1
+    num_train_seeds: 3
+    n_folds: 5
+    out_metric:
+      type: sklearn.metrics.roc_auc_score
+    model_type: 'lgb'
+    k_fold_fn:
+      type: sklearn.model_selection.GroupKFold # sklearn.model_selection.GroupKFold if preprocessing.duplicates == group
+    groups_col: duplicates_group # duplicates_group if preprocessing.duplicates == group
