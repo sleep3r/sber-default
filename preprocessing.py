@@ -45,7 +45,7 @@ class DefaultTransformer:
         self.X_test = X_test.copy()
 
     def _make_df(self, x: np.ndarray, transformer: ColumnTransformer) -> pd.DataFrame:
-        x = pd.DataFrame(x)
+        x = pd.DataFrame(x).astype(float)
         x.columns = get_column_names_from_ColumnTransformer(transformer)
         return x
 

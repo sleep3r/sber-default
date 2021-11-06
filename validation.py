@@ -190,7 +190,7 @@ class BaseCV:
                         model = lightgbm.LGBMModel(**self.model_params)
                         model.random_state = train_seed
                         e_stop = round(5 / model.get_params()['learning_rate'])
-
+                        X_train.to_csv("fold.csv")
                         model.fit(X_train, np.array(y_train), sample_weight=weights_train,
                                   eval_set=(X_test, y_test),
                                   early_stopping_rounds=e_stop, eval_metric=model.metric,  # lgb_wrmse,
