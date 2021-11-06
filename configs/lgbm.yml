@@ -9,10 +9,10 @@ dataset:
   target_name: "default_12m"
 
 preprocessing:
-  drop_duplicates: true
+  replace_inf: 0
+  duplicates: group
   process_na: drop
   has_na: null
-  replace_inf: 0
 
 
   cat_features: [ ]

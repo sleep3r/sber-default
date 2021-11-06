@@ -89,15 +89,21 @@ class DefaultTransformer:
             self.X = self.X.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
-        if self.cfg.preprocessing.process_na == "drop":
-            self.X = self.X.dropna().copy()
-        elif self.cfg.preprocessing.process_na == "keep":
-            self.X = self.X[self.X.isnull().any(1)].copy()
-
-        if self.cfg.preprocessing.drop_duplicates:
+        if self.cfg.preprocessing.duplicates == "drop":
             x = self._drop_duplicates().drop(self.cfg.dataset.target_name, axis=1)
+        elif self.cfg.preprocessing.duplicates == "group":
+            subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
+                     [self.cfg.dataset.target_name]
+            self.X["duplicates_group"] = self.X.fillna(-1).groupby(subset).ngroup()
+            x = self.X.drop(self.cfg.dataset.target_name, axis=1)
         else:
             x = self.X.copy().drop(self.cfg.dataset.target_name, axis=1)
+
+        if self.cfg.preprocessing.process_na == "drop":
+            x = x.dropna()
+        elif self.cfg.preprocessing.process_na == "keep":
+            x = x[x.isnull().any(1)].copy()
+
         y = self.X[self.cfg.dataset.target_name].copy()
 
         x_test = self.X_test.copy() if self.X_test is not None else None
