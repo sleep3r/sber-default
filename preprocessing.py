@@ -74,7 +74,7 @@ class DefaultTransformer:
             ('ohe', encoder, self.cfg.preprocessing.cat_features),
             ("num", cont_transformer, self.cfg.preprocessing.cont_features),
             ("skewed", skewed_transformer, self.cfg.preprocessing.skewed_features),
-            ('other', imputer, self.cfg.preprocessing.other_features)
+            # ('other', imputer, self.cfg.preprocessing.other_features)
         ])
         return column_transformer
 
