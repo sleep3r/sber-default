@@ -40,7 +40,6 @@ class DefaultTransformer:
         return column_transformer
 
     def _fit_transform(self, x, x_test, column_transformer) -> (pd.DataFrame, pd.DataFrame):
-        x.to_csv("a.csv")
         x = column_transformer.fit_transform(x)
         x = self._make_df(x, column_transformer)
 
