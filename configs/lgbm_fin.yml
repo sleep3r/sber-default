@@ -1,4 +1,4 @@
-exp_name: "baseline"
+exp_name: "lgbm_nofin"
 work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
 seed: 45657
 
