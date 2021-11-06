@@ -10,7 +10,7 @@ dataset:
 
 
 features:
-  generation: # don't forget to add generated columns to preprocessing
+  generation: # (!!!) don't forget to add generated columns to preprocessing
     has_na: null # adds has_na column if true
     duplicates: group # adds duplicates_group if group
     mark_fin: ar_revenue # adds has_fin by no nan rows of column specified
