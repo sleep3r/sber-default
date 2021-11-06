@@ -44,11 +44,15 @@ class DefaultTransformer:
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def _drop_duplicates(self) -> pd.DataFrame:
+    def _drop_duplicates(self) -> None:
         subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
                  [self.cfg.dataset.target_name]
-        x = self.X.copy().drop_duplicates(subset, keep="last")
-        return x
+        self.X = self.X.drop_duplicates(subset, keep="last")
+
+    def _group_duplicates(self) -> None:
+        subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
+                 [self.cfg.dataset.target_name]
+        self.X["duplicates_group"] = self.X.fillna(-1).groupby(subset).ngroup()
 
     def _make_df(self, x: np.ndarray, transformer: ColumnTransformer) -> pd.DataFrame:
         x = pd.DataFrame(x)
@@ -90,20 +94,16 @@ class DefaultTransformer:
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
         if self.cfg.preprocessing.duplicates == "drop":
-            x = self._drop_duplicates().drop(self.cfg.dataset.target_name, axis=1)
+            self._drop_duplicates()
         elif self.cfg.preprocessing.duplicates == "group":
-            subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
-                     [self.cfg.dataset.target_name]
-            self.X["duplicates_group"] = self.X.fillna(-1).groupby(subset).ngroup()
-            x = self.X.drop(self.cfg.dataset.target_name, axis=1)
-        else:
-            x = self.X.copy().drop(self.cfg.dataset.target_name, axis=1)
+            self._group_duplicates()
 
         if self.cfg.preprocessing.process_na == "drop":
-            x = x.dropna()
+            self.X = self.X.dropna()
         elif self.cfg.preprocessing.process_na == "keep":
-            x = x[x.isnull().any(1)].copy()
+            self.X = self.X[self.X.isnull().any(1)].copy()
 
+        x = self.X.drop(self.cfg.dataset.target_name, axis=1)
         y = self.X[self.cfg.dataset.target_name].copy()
 
         x_test = self.X_test.copy() if self.X_test is not None else None
