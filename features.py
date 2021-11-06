@@ -10,16 +10,19 @@ class DefaultGenerator:
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def _drop_duplicates(self) -> pd.DataFrame:
-        subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
-                 [self.cfg.dataset.target_name]
-        return self.X.drop_duplicates(subset, keep="last")
+    def _drop_duplicates(self, X: pd.DataFrame) -> pd.DataFrame:
+        subset = [col for col in X.columns if
+                  col not in self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]]
+        return X.drop_duplicates(subset, keep="last")
 
-    def _group_duplicates(self) -> pd.DataFrame:
-        subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
-                 [self.cfg.dataset.target_name]
-        self.X["duplicates_group"] = self.X.fillna(-1).groupby(subset).ngroup()
-        return self.X
+    def _group_duplicates(self, X: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+        X['test_flg'] = 0
+        X_test['test_flg'] = 1
+        subset = [col for col in X.columns if
+                  col not in self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]]
+        df = pd.concat([X, X_test], sort=False)
+        df["duplicates_group"] = df.fillna(-1).groupby(subset).ngroup()
+        return df[df.test_flg == 0].copy(), df[df.test_flg == 1].copy()
 
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
@@ -30,11 +33,6 @@ class DefaultGenerator:
 
         if self.cfg.features.generation.mark_fin is not None:
             X['has_fin'] = X[self.cfg.features.generation.mark_fin].notnull()
-
-        if self.cfg.features.generation.duplicates == "drop":
-            X = self._drop_duplicates()
-        elif self.cfg.features.generation.duplicates == "group":
-            X = self._group_duplicates()
 
         TL = X.ab_long_term_liabilities + X.ab_other_borrowings + X.ab_short_term_borrowing
         TA = X.ab_own_capital + X.ab_borrowed_capital
@@ -85,6 +83,11 @@ class DefaultGenerator:
     def generate_features(self) -> (pd.DataFrame, pd.DataFrame):
         X = self._generate(self.X)
         X_test = self._generate(self.X_test)
+
+        if self.cfg.features.generation.duplicates == "drop":
+            X = self._drop_duplicates(X)
+        elif self.cfg.features.generation.duplicates == "group":
+            X, X_test = self._group_duplicates(X, X_test)
         return X, X_test
 
 
