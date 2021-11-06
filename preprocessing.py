@@ -44,16 +44,6 @@ class DefaultTransformer:
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def _drop_duplicates(self) -> None:
-        subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
-                 [self.cfg.dataset.target_name]
-        self.X = self.X.drop_duplicates(subset, keep="last")
-
-    def _group_duplicates(self) -> None:
-        subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
-                 [self.cfg.dataset.target_name]
-        self.X["duplicates_group"] = self.X.fillna(-1).groupby(subset).ngroup()
-
     def _make_df(self, x: np.ndarray, transformer: ColumnTransformer) -> pd.DataFrame:
         x = pd.DataFrame(x)
         x.columns = get_column_names_from_ColumnTransformer(transformer)
@@ -93,14 +83,9 @@ class DefaultTransformer:
             self.X = self.X.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
-        if self.cfg.preprocessing.duplicates == "drop":
-            self._drop_duplicates()
-        elif self.cfg.preprocessing.duplicates == "group":
-            self._group_duplicates()
-
-        if self.cfg.preprocessing.process_na == "drop":
+        if self.cfg.preprocessing.features.process_na == "drop":
             self.X = self.X.dropna()
-        elif self.cfg.preprocessing.process_na == "keep":
+        elif self.cfg.preprocessing.features.process_na == "keep":
             self.X = self.X[self.X.isnull().any(1)].copy()
 
         x = self.X.drop(self.cfg.dataset.target_name, axis=1)

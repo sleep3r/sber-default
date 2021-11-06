@@ -10,10 +10,7 @@ dataset:
 
 preprocessing:
   replace_inf: 0
-  duplicates: drop
-  process_na: drop
-  has_na: null
-
+  process_na: drop # drop to drop or group to keep only na or null to do nothing
 
   cat_features: [ ]
   cont_features: [ ]
@@ -42,6 +39,10 @@ preprocessing:
       output_distribution: "normal"
 
 features:
+  generation:
+    has_na: null # adds has_na column if true
+    duplicates: drop # adds duplicates_group if group
+
   selection:
     selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
                 'ab_cash_and_securities', 'ab_own_capital',
