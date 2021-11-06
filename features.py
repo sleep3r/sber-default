@@ -10,15 +10,16 @@ class DefaultGenerator:
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def _drop_duplicates(self) -> None:
+    def _drop_duplicates(self) -> pd.DataFrame:
         subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
                  [self.cfg.dataset.target_name]
-        self.X = self.X.drop_duplicates(subset, keep="last")
+        return self.X.drop_duplicates(subset, keep="last")
 
-    def _group_duplicates(self) -> None:
+    def _group_duplicates(self) -> pd.DataFrame:
         subset = [*set(self.X.columns) - set(self.cfg.preprocessing.drop_features)] + \
                  [self.cfg.dataset.target_name]
         self.X["duplicates_group"] = self.X.fillna(-1).groupby(subset).ngroup()
+        return self.X
 
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
@@ -28,9 +29,9 @@ class DefaultGenerator:
             X.loc[X.isnull().any(1), "has_na"] = 1
 
         if self.cfg.features.generation.duplicates == "drop":
-            self._drop_duplicates()
+            X = self._drop_duplicates()
         elif self.cfg.features.generation.duplicates == "group":
-            self._group_duplicates()
+            X = self._group_duplicates()
 
         TL = X.ab_long_term_liabilities + X.ab_other_borrowings + X.ab_short_term_borrowing
         TA = X.ab_own_capital + X.ab_borrowed_capital
