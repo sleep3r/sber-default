@@ -20,11 +20,13 @@ dataset:
 #    'r_10_a', 'r_11_a', 'r_12_a', 'r_13_a', 'r_15_a', 'r_16_a', 'r_17_a', 'r_18_a', 'r_19_a', 'r_20_a',
 #    'r_21_a', 'r_22_a', 'r_23_a', 'r_24_a', 'r_25_a', 'r_26_a', 'r_27_a' ]
 
+
 features_generation: # (!!!) don't forget to add generated columns to preprocessing
-  has_na: null # adds has_na column if true
-  duplicates: group # adds duplicates_group if group
-  mark_fin: ar_revenue # adds has_fin by no nan rows of column specified
-  mark_nofin: null # adds no_fin by nan rows of column specified
+  has_na: null # adds 'has_na' column if true
+  duplicates: group # adds 'duplicates_group' column if group
+  mark_fin: ar_revenue # adds 'has_fin' by no nan rows of column specified
+  mark_nofin: null # adds 'no_fin' by nan rows of column specified
+
 
 preprocessing:
   replace_inf: 0
@@ -75,6 +77,7 @@ model:
     n_jobs: 4
     max_depth: 15
     criterion: gini
+
 
 validation:
   cutoff: 0.06
