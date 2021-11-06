@@ -33,7 +33,7 @@ preprocessing:
                     'ab_cash_and_securities', 'ab_own_capital',
                     'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
                     'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
-                    'duplicates_group',]
+                    'duplicates_group', "has_fin"]
   drop_features: [ "rating_id", "ul_systematizing_flg" ]
 
   scaler:

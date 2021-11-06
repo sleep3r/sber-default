@@ -30,7 +30,6 @@ class DefaultGenerator:
 
         if self.cfg.features.generation.mark_fin is not None:
             X['has_fin'] = X[self.cfg.features.generation.mark_fin].notnull()
-            print(X.columns)
 
         if self.cfg.features.generation.duplicates == "drop":
             X = self._drop_duplicates()
