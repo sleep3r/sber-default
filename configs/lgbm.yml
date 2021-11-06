@@ -80,5 +80,5 @@ validation:
       type: sklearn.metrics.roc_auc_score
     model_type: 'lgb'
     verbose: false
-    groups_col: duplicates_group
+    groups_col: null # duplicates_group if preprocessing.duplicates == group
 
