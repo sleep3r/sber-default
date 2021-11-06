@@ -175,7 +175,7 @@ def train_model(cfg: MLConfig):
         nfolds=cv_params.n_folds,
         cat_features=cfg.preprocessing.cat_features,
         verbose=cv_params.verbose,
-        k_fold_fn=GroupKFold, groups_for_split=X_generated_preprocessed_selected[cv_params.groups_col]
+        k_fold_fn=GroupKFold, groups_for_split=X_generated_preprocessed[cv_params.groups_col]
     )
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()

@@ -12,6 +12,9 @@ class DefaultGenerator:
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
 
+        X["has_na"] = 0
+        X.loc[X.isnull().any(1), "has_na"] = 1
+
         TL = X.ab_long_term_liabilities + X.ab_other_borrowings + X.ab_short_term_borrowing
         TA = X.ab_own_capital + X.ab_borrowed_capital
         STD = X.ab_short_term_borrowing
