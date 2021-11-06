@@ -103,7 +103,7 @@ def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, X_test, y, submit
     log_report(meta, exp_dir)
     log_best_model(best_estimator, exp_dir)
     log_dataset(X, y, X_test, exp_dir)
-    log_submit(submit_df, exp_dir)
+    # log_submit(submit_df, exp_dir)
 
 
 def prepare_training(cfg: MLConfig) -> dict:
@@ -181,10 +181,10 @@ def train_model(cfg: MLConfig):
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()
 
-    submit_df = make_submit(
-        model, X_generated_preprocessed_selected, y, X_test_generated_preprocessed_selected,
-        index=X_test.record_id.values, cutoff=cfg.validation.cutoff
-    )
+    # submit_df = make_submit(
+    #     model, X_generated_preprocessed_selected, y, X_test_generated_preprocessed_selected,
+    #     index=X_test.record_id.values, cutoff=cfg.validation.cutoff
+    # )
     log_artifacts(
         meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, submit_df
     )
