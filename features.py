@@ -28,6 +28,9 @@ class DefaultGenerator:
             X["has_na"] = 0
             X.loc[X.isnull().any(1), "has_na"] = 1
 
+        if self.cfg.features.generation.mark_fin is not None:
+            X['has_fin'] = X[self.cfg.features.generation.mark_fin].notnull()
+
         if self.cfg.features.generation.duplicates == "drop":
             X = self._drop_duplicates()
         elif self.cfg.features.generation.duplicates == "group":
