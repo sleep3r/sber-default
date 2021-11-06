@@ -78,12 +78,11 @@ def log_best_model(best_estimator, exp_dir: Path) -> None:
         pickle.dump(best_estimator, f)
 
 
-def make_submit(model, X: pd.DataFrame, y, X_test, index: np.ndarray, cutoff: float) -> pd.DataFrame:
-    model.fit(X.values, y)
+def make_submit(test_predictions: pd.DataFrame, index: np.ndarray, cutoff: float) -> pd.DataFrame:
+    probas = test_predictions.predictions.values
 
-    predict = model.predict_proba(X_test.values)
     answ_df = pd.DataFrame(index, columns=["id"])
-    answ_df['predict'] = (predict[:, 1] > cutoff).astype(int)
+    answ_df['predict'] = (probas > cutoff).astype(int)
     return answ_df
 
 
@@ -182,12 +181,9 @@ def train_model(cfg: MLConfig):
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()
 
-    # submit_df = make_submit(
-    #     model, X_generated_preprocessed_selected, y, X_test_generated_preprocessed_selected,
-    #     index=X_test.record_id.values, cutoff=cfg.validation.cutoff
-    # )
+    submit_df = make_submit(test_predictions, index=X_test.record_id.values, cutoff=cfg.validation.cutoff)
     log_artifacts(
-        meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, None
+        meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, submit_df
     )
 
 
