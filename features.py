@@ -27,14 +27,14 @@ class DefaultGenerator:
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
 
-        if self.cfg.features.generation.has_na:
+        if self.cfg.features_generation.has_na:
             X["has_na"] = 0
             X.loc[X.isnull().any(1), "has_na"] = 1
 
-        if self.cfg.features.generation.mark_fin is not None:
-            X['has_fin'] = X[self.cfg.features.generation.mark_fin].notnull()
-        if self.cfg.features.generation.mark_nofin is not None:
-            X['no_fin'] = X[self.cfg.features.generation.mark_nofin].isnull()
+        if self.cfg.features_generation.mark_fin is not None:
+            X['has_fin'] = X[self.cfg.features_generation.mark_fin].notnull()
+        if self.cfg.features_generation.mark_nofin is not None:
+            X['no_fin'] = X[self.cfg.features_generation.mark_nofin].isnull()
 
         TL = X.ab_long_term_liabilities + X.ab_other_borrowings + X.ab_short_term_borrowing
         TA = X.ab_own_capital + X.ab_borrowed_capital
@@ -86,9 +86,9 @@ class DefaultGenerator:
         X = self._generate(self.X)
         X_test = self._generate(self.X_test)
 
-        if self.cfg.features.generation.duplicates == "drop":
+        if self.cfg.features_generation.duplicates == "drop":
             X = self._drop_duplicates(X)
-        elif self.cfg.features.generation.duplicates == "group":
+        elif self.cfg.features_generation.duplicates == "group":
             X, X_test = self._group_duplicates(X, X_test)
         return X, X_test
 
@@ -101,7 +101,12 @@ class DefaultSelector:
 
     def _select(self, X: pd.DataFrame):
         X = X.copy()
-        return X[self.cfg.features.selection.selected]
+        try:
+            X_selected = X[self.cfg.features_selection.selected]
+        except Exception as e:
+            print(e)
+            raise KeyError(X.columns)
+        return X_selected
 
     def select_features(self) -> (pd.DataFrame, pd.DataFrame):
         X = self._select(self.X)

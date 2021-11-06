@@ -9,7 +9,7 @@ from sklearn.metrics import roc_auc_score, classification_report, accuracy_score
 from sklearn.model_selection import StratifiedKFold, GroupKFold
 import lightgbm
 
-from config import MLConfig
+from config import MLConfig, object_from_dict
 
 
 def validate(probas: np.ndarray, y_val: np.ndarray, cutoff: float) -> Dict[str, float]:
@@ -39,6 +39,7 @@ class BaseCV:
             mask=0, mask_name='', train_kick_mask=np.array([]), verbose=True,
             cat_features=None, fl_multiclass=False
     ):
+        self.cfg = cfg
         self.X = X
         self.y = y
         self.train_features = train_features
@@ -202,6 +203,13 @@ class BaseCV:
                                 flag_save_model_features = False
                                 pd.DataFrame(columns=self.train_features).to_csv(
                                     self.model_folder + self.save_model_name + '/train_features.txt', index=False)
+                else:
+                    model = object_from_dict(self.cfg.model)
+                    fit_params = self.cfg.model.get("fit_params", {})
+                    if self.cfg.model.eval_set_param:
+                        fit_params[self.cfg.model.eval_set_param] = (X_test, y_test)
+                    model.fit(X_train, np.array(y_train), **fit_params)
+                    best_iter = -1
 
                 #################### predict oof and test ########################
                 try:
