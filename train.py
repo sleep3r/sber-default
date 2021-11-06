@@ -165,7 +165,7 @@ def train_model(cfg: MLConfig):
 
     print("crossval...")
     cv_params = cfg.validation.cv_params
-    print(X_generated_preprocessed_selected.columns)
+    pd.to_csv("data.csv")
     cv = BaseCV(
         cfg, X_generated_preprocessed_selected, y,
         train_features=X_generated_preprocessed_selected.columns,
