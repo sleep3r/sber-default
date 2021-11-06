@@ -84,6 +84,7 @@ class DefaultTransformer:
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
         if self.cfg.preprocessing.select_rows is not None:
+            print(self.X.columns)
             self.X = self.X[self.X[self.cfg.preprocessing.select_rows] is True].copy()
 
         if self.cfg.preprocessing.process_na == "drop":
