@@ -40,8 +40,8 @@ class BaseCV:
             cat_features=None, fl_multiclass=False
     ):
         self.cfg = cfg
-        self.X = X
-        self.y = y
+        self.X = X.copy()
+        self.y = y.copy()
         self.train_features = train_features
         self.X_to_pred = pd.DataFrame() if X_to_pred is None else X_to_pred
         self.y_for_split = y_for_split
