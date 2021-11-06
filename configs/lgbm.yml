@@ -22,7 +22,7 @@ features:
                 'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
 
 preprocessing:
-  replace_inf: 0
+  replace_inf: null
   process_na: null # drop to drop or group to keep only na or null to do nothing
   select_rows: has_fin # selects only rows if selected col is true
 
