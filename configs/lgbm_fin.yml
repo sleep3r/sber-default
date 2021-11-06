@@ -29,26 +29,21 @@ features_generation: # (!!!) don't forget to add generated columns to preprocess
 
 
 preprocessing:
-  replace_inf: 0
+  replace_inf: null
   process_na: null # drop to drop or keep to keep only na or null to do nothing
   select_rows: has_fin # selects only rows if selected col is specified
 
-  cat_features: [ 'ul_staff_range' ]
-  cont_features: [
-      'ar_revenue', 'ar_total_expenses', 'ar_sale_cost', 'ar_selling_expenses',
-      'ar_management_expenses', 'ar_sale_profit', 'ar_balance_of_rvns_and_expns',
-      'ar_profit_before_tax', 'ar_taxes', 'ar_other_profit_and_losses', 'ar_net_profit',
-      'ab_immobilized_assets', 'ab_mobile_current_assets', 'ab_inventory', 'ab_accounts_receivable',
-      'ab_other_current_assets', 'ab_cash_and_securities', 'ab_losses', 'ab_own_capital',
-      'ab_borrowed_capital', 'ab_long_term_liabilities', 'ab_short_term_borrowing', 'ab_accounts_payable',
-      'ab_other_borrowings', 'bus_age', 'ogrn_age', 'adr_actual_age', 'head_actual_age', 'cap_actual_age',
-      'ul_capital_sum', 'ul_founders_cnt', 'ul_branch_cnt', 'ul_strategic_flg',
-      'r_1_a', 'r_2_a', 'r_3_a', 'r_4_a', 'r_5_a', 'r_6_a', 'r_7_a', 'r_8_a', 'r_9_a',
-      'r_10_a', 'r_11_a', 'r_12_a', 'r_13_a', 'r_15_a', 'r_16_a', 'r_17_a', 'r_18_a', 'r_19_a', 'r_20_a',
-      'r_21_a', 'r_22_a', 'r_23_a', 'r_24_a', 'r_25_a', 'r_26_a', 'r_27_a'
-  ]
+  cat_features: [ ]
+  cont_features: [ ]
   skewed_features: [ ]
-  other_features: [ 'duplicates_group', "has_fin" ]
+  other_features: [
+      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
+      'ab_cash_and_securities', 'ab_own_capital',
+      'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
+      'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
+
+      'duplicates_group', "has_fin"
+  ]
   drop_features: [ "record_id", ]
 
   scaler:
@@ -70,24 +65,11 @@ preprocessing:
 
 
 features_selection:
-  rename_columns:
-    ul_staff_range_(100-500]: "ul_1"
-    ul_staff_range_> 500: "ul_2"
-    ul_staff_range_[1-100]: "ul_3"
-
   selected: [
-      'ul_1', 'ul_2', 'ul_3',
-      'ar_revenue', 'ar_total_expenses', 'ar_sale_cost', 'ar_selling_expenses',
-      'ar_management_expenses', 'ar_sale_profit', 'ar_balance_of_rvns_and_expns',
-      'ar_profit_before_tax', 'ar_taxes', 'ar_other_profit_and_losses', 'ar_net_profit',
-      'ab_immobilized_assets', 'ab_mobile_current_assets', 'ab_inventory', 'ab_accounts_receivable',
-      'ab_other_current_assets', 'ab_cash_and_securities', 'ab_losses', 'ab_own_capital',
-      'ab_borrowed_capital', 'ab_long_term_liabilities', 'ab_short_term_borrowing', 'ab_accounts_payable',
-      'ab_other_borrowings', 'bus_age', 'ogrn_age', 'adr_actual_age', 'head_actual_age', 'cap_actual_age',
-      'ul_capital_sum', 'ul_founders_cnt', 'ul_branch_cnt', 'ul_strategic_flg',
-      'r_1_a', 'r_2_a', 'r_3_a', 'r_4_a', 'r_5_a', 'r_6_a', 'r_7_a', 'r_8_a', 'r_9_a',
-      'r_10_a', 'r_11_a', 'r_12_a', 'r_13_a', 'r_15_a', 'r_16_a', 'r_17_a', 'r_18_a', 'r_19_a', 'r_20_a',
-      'r_21_a', 'r_22_a', 'r_23_a', 'r_24_a', 'r_25_a', 'r_26_a', 'r_27_a'
+      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
+      'ab_cash_and_securities', 'ab_own_capital',
+      'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
+      'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a'
   ]
 
 model:
@@ -112,7 +94,7 @@ model:
 
 
 validation:
-  cutoff: 0.06
+  cutoff: 0.05
   test_size: 0.2
 
   cv_params:
