@@ -33,6 +33,8 @@ class DefaultGenerator:
 
         if self.cfg.features.generation.mark_fin is not None:
             X['has_fin'] = X[self.cfg.features.generation.mark_fin].notnull()
+        if self.cfg.features.generation.mark_nofin is not None:
+            X['no_fin'] = X[self.cfg.features.generation.mark_nofin].isnull()
 
         TL = X.ab_long_term_liabilities + X.ab_other_borrowings + X.ab_short_term_borrowing
         TA = X.ab_own_capital + X.ab_borrowed_capital

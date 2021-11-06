@@ -13,7 +13,8 @@ features:
   generation: # don't forget to add generated columns to preprocessing
     has_na: null # adds has_na column if true
     duplicates: group # adds duplicates_group if group
-    mark_fin: ar_revenue # adds has_fin by no nan with column set
+    mark_fin: ar_revenue # adds has_fin by no nan rows of column specified
+    mark_nofin: null # adds no_fin by nan rows of column specified
 
   selection:
     selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
