@@ -186,7 +186,7 @@ def train_model(cfg: MLConfig):
     #     index=X_test.record_id.values, cutoff=cfg.validation.cutoff
     # )
     log_artifacts(
-        meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, submit_df
+        meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, None
     )
 
 
