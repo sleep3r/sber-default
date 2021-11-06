@@ -80,6 +80,7 @@ validation:
       type: sklearn.metrics.roc_auc_score
     model_type: 'lgb'
     verbose: false
-    k_fold_fn: null # sklearn.model_selection.GroupKFold if preprocessing.duplicates == group
+    k_fold_fn:
+      type: null # sklearn.model_selection.GroupKFold if preprocessing.duplicates == group
     groups_col: null # duplicates_group if preprocessing.duplicates == group
 

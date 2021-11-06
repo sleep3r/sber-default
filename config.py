@@ -82,10 +82,10 @@ def fit(**kwargs) -> CommentedMap:
     return update_cfg
 
 
-def object_from_dict(d: Optional[CfgDict], parent=None, **default_kwargs):
-    if d is not None:
-        kwargs = dict(d).copy()
-        object_type = kwargs.pop("type")
+def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
+    kwargs = dict(d).copy()
+    object_type = kwargs.pop("type", None)
+    if object_type is not None:
         params = kwargs.pop("params", None)
 
         for name, value in default_kwargs.items():
