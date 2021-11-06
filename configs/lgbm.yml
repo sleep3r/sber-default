@@ -10,7 +10,7 @@ dataset:
 
 preprocessing:
   replace_inf: 0
-  duplicates: group
+  duplicates: drop
   process_na: drop
   has_na: null
 
