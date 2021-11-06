@@ -8,6 +8,18 @@ dataset:
 
   target_name: "default_12m"
 
+
+features:
+  generation:
+    has_na: null # adds has_na column if true
+    duplicates: group # adds duplicates_group if group
+
+  selection:
+    selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
+                'ab_cash_and_securities', 'ab_own_capital',
+                'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
+                'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
+
 preprocessing:
   replace_inf: 0
   process_na: drop # drop to drop or group to keep only na or null to do nothing
@@ -37,17 +49,6 @@ preprocessing:
     params:
       n_quantiles: 100
       output_distribution: "normal"
-
-features:
-  generation:
-    has_na: null # adds has_na column if true
-    duplicates: drop # adds duplicates_group if group
-
-  selection:
-    selected: [ 'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
-                'ab_cash_and_securities', 'ab_own_capital',
-                'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-                'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a' ]
 
 model:
   type: lightgbm.LGBMClassifier
@@ -82,6 +83,6 @@ validation:
     model_type: 'lgb'
     verbose: false
     k_fold_fn:
-      type: null # sklearn.model_selection.GroupKFold if preprocessing.duplicates == group
-    groups_col: null # duplicates_group if preprocessing.duplicates == group
+      type: sklearn.model_selection.GroupKFold # sklearn.model_selection.GroupKFold if preprocessing.duplicates == group
+    groups_col: duplicates_group # duplicates_group if preprocessing.duplicates == group
 
