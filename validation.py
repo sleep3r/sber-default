@@ -34,7 +34,7 @@ class BaseCV:
             groups_for_split=None, weights=None, weights2=None,
             out_metric=roc_auc_score, base_train_seed=42, num_train_seeds=1,
             model_type='lgb', model_params=None,
-            k_fold_fn=StratifiedKFold, fold_seed=15, nfolds=5,
+            k_fold_fn=None, fold_seed=15, nfolds=5,
             save_model_name='', model_folder='../models/', use_saved_model=False,
             mask=0, mask_name='', train_kick_mask=np.array([]), verbose=True,
             cat_features=None, fl_multiclass=False
@@ -52,7 +52,7 @@ class BaseCV:
         self.num_train_seeds = num_train_seeds
         self.model_type = model_type
         self.model_params = {} if model_params is None else model_params
-        self.k_fold_fn = k_fold_fn
+        self.k_fold_fn = StratifiedKFold if k_fold_fn is None else k_fold_fn
         self.fold_seed = fold_seed
         self.nfolds = nfolds
         self.save_model_name = save_model_name
