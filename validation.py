@@ -33,7 +33,7 @@ class BaseCV:
             X_to_pred=None, y_for_split=None,
             groups_for_split=None, weights=None, weights2=None,
             out_metric=roc_auc_score, base_train_seed=42, num_train_seeds=1,
-            model_type='lgb', model_params=None,
+            model_params=None,
             k_fold_fn=None, fold_seed=15, nfolds=5,
             save_model_name='', model_folder='../models/', use_saved_model=False,
             mask=0, mask_name='', train_kick_mask=np.array([]), verbose=True,
@@ -50,7 +50,7 @@ class BaseCV:
         self.out_metric = out_metric
         self.base_train_seed = base_train_seed
         self.num_train_seeds = num_train_seeds
-        self.model_type = model_type
+        self.model_type = cfg.model.type.split(".")[0]
         self.model_params = {} if model_params is None else model_params
         self.k_fold_fn = StratifiedKFold if k_fold_fn is None else k_fold_fn
         self.fold_seed = fold_seed
@@ -181,7 +181,7 @@ class BaseCV:
                     weights_train = weights_train[inv_train_kick_mask_fold]
                     kick = 'kicked:' + str((~inv_train_kick_mask_fold).sum())
 
-                if self.model_type == 'lgb':
+                if self.model_type == 'lightgbm':
                     if self.use_saved_model:
                         model = lightgbm.Booster(model_file=model_full_name)
                         best_iter = -1

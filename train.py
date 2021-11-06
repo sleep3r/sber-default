@@ -148,15 +148,16 @@ def train_model(cfg: MLConfig):
     print("\nTraining...")
     model = object_from_dict(cfg.model)
 
+    print("val...")
     X_train, X_val, y_train, y_val = train_test_split(
         X_generated_preprocessed_selected, y,
         stratify=y, test_size=cfg.validation.test_size, shuffle=True
     )
 
-    print("val...")
     fit_params = cfg.model.get("fit_params", {})
     if cfg.model.eval_set_param:
         fit_params[cfg.model.eval_set_param] = (X_val, y_val)
+
     model.fit(X_train.values, y_train, **fit_params)
     probas = model.predict_proba(X_val.values)
     metrics = validate(probas=probas, y_val=y_val, cutoff=cfg.validation.cutoff)
@@ -170,7 +171,7 @@ def train_model(cfg: MLConfig):
         X_to_pred=X_test_generated_preprocessed_selected, out_metric=object_from_dict(cv_params.out_metric),
         base_train_seed=cfg.seed, fold_seed=cv_params.fold_seed,
         num_train_seeds=cv_params.num_train_seeds,
-        model_type=cv_params.model_type, model_params=cfg.model.params,
+        model_params=cfg.model.params,
         nfolds=cv_params.n_folds,
         cat_features=cfg.preprocessing.cat_features,
         verbose=cv_params.verbose,
