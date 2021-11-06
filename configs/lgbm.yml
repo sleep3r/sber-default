@@ -1,6 +1,6 @@
 exp_name: "baseline"
 work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
-seed: 7771234
+seed: 45657
 
 dataset:
   train_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-train.csv"

@@ -179,8 +179,6 @@ def train_model(cfg: MLConfig):
         groups_for_split=X_generated_preprocessed[cv_params.groups_col] if cv_params.groups_col else None
     )
 
-    print(X_generated_preprocessed[cv_params.groups_col])
-
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()
 
