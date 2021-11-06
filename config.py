@@ -83,24 +83,25 @@ def fit(**kwargs) -> CommentedMap:
 
 def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
     kwargs = dict(d).copy()
-    object_type = kwargs.pop("type")
-    params = kwargs.pop("params", None)
+    if kwargs:
+        object_type = kwargs.pop("type")
+        params = kwargs.pop("params", None)
 
-    for name, value in default_kwargs.items():
-        params.setdefault(name, value)
-    if parent is not None:
-        if params is not None:
-            return getattr(parent, object_type)(**params)
-        else:
-            return getattr(parent, object_type)
-    else:
-        try:
+        for name, value in default_kwargs.items():
+            params.setdefault(name, value)
+        if parent is not None:
             if params is not None:
-                return pydoc.locate(object_type)(**params)
+                return getattr(parent, object_type)(**params)
             else:
-                return pydoc.locate(object_type)
-        except:
-            raise ImportError("Check module installed and correct params for", object_type)
+                return getattr(parent, object_type)
+        else:
+            try:
+                if params is not None:
+                    return pydoc.locate(object_type)(**params)
+                else:
+                    return pydoc.locate(object_type)
+            except:
+                raise ImportError("Check module installed and correct params for", object_type)
 
 
 def load_config() -> MLConfig:
