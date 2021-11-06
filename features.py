@@ -101,6 +101,8 @@ class DefaultSelector:
 
     def _select(self, X: pd.DataFrame):
         X = X.copy()
+        if self.cfg.features_selection.rename_columns is not None:
+            X = X.rename(columns=dict(self.cfg.features_selection.rename_columns))
         try:
             X_selected = X[self.cfg.features_selection.selected]
         except Exception as e:
