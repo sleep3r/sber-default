@@ -104,8 +104,9 @@ class DefaultSelector:
         try:
             X_selected = X[self.cfg.features_selection.selected]
         except Exception as e:
+            print([*X.columns])
             print(e)
-            raise KeyError(X.columns)
+            raise KeyError("Please, check features you're selecting")
         return X_selected
 
     def select_features(self) -> (pd.DataFrame, pd.DataFrame):

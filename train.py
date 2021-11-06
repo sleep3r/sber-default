@@ -78,22 +78,27 @@ def log_best_model(best_estimator, exp_dir: Path) -> None:
         pickle.dump(best_estimator, f)
 
 
-def make_submit(test_predictions: pd.DataFrame, index: np.ndarray, cutoff: float) -> pd.DataFrame:
+def make_submit(cfg, test_predictions: pd.DataFrame, X_test, cutoff: float) -> pd.DataFrame:
     probas = test_predictions.predictions.values
+
+    if cfg.preprocessing.select_rows is not None:
+        index = X_test[X_test[cfg.preprocessing.select_rows]].record_id.values
+    else:
+        index = X_test.record_id.values
 
     answ_df = pd.DataFrame(index, columns=["id"])
     answ_df['predict'] = (probas > cutoff).astype(int)
     return answ_df
 
 
-def log_dataset(X: pd.DataFrame, y, X_test, exp_dir: Path) -> None:
+def log_dataset(X: pd.DataFrame, y: pd.Series, X_test: pd.DataFrame, exp_dir: Path) -> None:
     X["target"] = y.values
-    X.to_csv(exp_dir / "data_train.csv", index=None)
-    X_test.to_csv(exp_dir / "data_test.csv", index=None)
+    X.to_csv(exp_dir / "data_train.csv", index=None)  # noqa
+    X_test.to_csv(exp_dir / "data_test.csv", index=None)  # noqa
 
 
 def log_submit(submit_df: pd.DataFrame, exp_dir: Path) -> None:
-    submit_df.to_csv(exp_dir / 'PD-submit.csv', index=False, sep=';')
+    submit_df.to_csv(exp_dir / 'PD-submit.csv', index=False, sep=';')  # noqa
 
 
 def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, X_test, y, submit_df: pd.DataFrame) -> None:
@@ -102,7 +107,7 @@ def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, X_test, y, submit
     log_report(meta, exp_dir)
     log_best_model(best_estimator, exp_dir)
     log_dataset(X, y, X_test, exp_dir)
-    # log_submit(submit_df, exp_dir)
+    log_submit(submit_df, exp_dir)
 
 
 def prepare_training(cfg: MLConfig) -> dict:
@@ -182,9 +187,15 @@ def train_model(cfg: MLConfig):
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()
 
-    submit_df = make_submit(test_predictions, index=X_test.record_id.values, cutoff=cfg.validation.cutoff)
+    submit_df = make_submit(
+        cfg=cfg,
+        test_predictions=test_predictions, X_test=X_test_generated,
+        cutoff=cfg.validation.cutoff
+    )
     log_artifacts(
-        meta, model, X_generated_preprocessed_selected, X_test_generated_preprocessed_selected, y, submit_df
+        meta=meta, best_estimator=model,
+        X=X_generated_preprocessed_selected, X_test=X_test_generated_preprocessed_selected, y=y,
+        submit_df=submit_df
     )
 
 

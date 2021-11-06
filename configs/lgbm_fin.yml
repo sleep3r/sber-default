@@ -30,7 +30,7 @@ features_generation: # (!!!) don't forget to add generated columns to preprocess
 
 preprocessing:
   replace_inf: null
-  process_na: null # drop to drop or group to keep only na or null to do nothing
+  process_na: null # drop to drop or keep to keep only na or null to do nothing
   select_rows: has_fin # selects only rows if selected col is specified
 
   cat_features: [ ]

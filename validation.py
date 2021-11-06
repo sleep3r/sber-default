@@ -227,6 +227,7 @@ class BaseCV:
                         y_pred_fold = model.predict(X_test)
 
                 y_predicted_train[test_index,] = y_pred_fold.copy()
+
                 fold_score = round(self.out_metric(round(y_test), y_pred_fold, sample_weight=weights_test), 5)
 
                 if not X_to_pred.empty:

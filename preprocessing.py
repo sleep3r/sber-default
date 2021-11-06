@@ -18,15 +18,6 @@ class DefaultTransformer:
         x.columns = get_column_names_from_ColumnTransformer(transformer)
         return x
 
-    def _fit_transform(self, x, x_test, column_transformer) -> (pd.DataFrame, pd.DataFrame):
-        x.to_csv("a.csv")
-        x = column_transformer.fit_transform(x)
-        x = self._make_df(x, column_transformer)
-
-        x_test = column_transformer.fit_transform(x_test)
-        x_test = self._make_df(x_test, column_transformer)
-        return x, x_test
-
     def _get_column_transformer(self) -> ColumnTransformer:
         scaler = object_from_dict(self.cfg.preprocessing.scaler)
         imputer = object_from_dict(self.cfg.preprocessing.imputer)
@@ -48,13 +39,27 @@ class DefaultTransformer:
         ])
         return column_transformer
 
+    def _fit_transform(self, x, x_test, column_transformer) -> (pd.DataFrame, pd.DataFrame):
+        x.to_csv("a.csv")
+        x = column_transformer.fit_transform(x)
+        x = self._make_df(x, column_transformer)
+
+        x_test = column_transformer.fit_transform(x_test)
+        x_test = self._make_df(x_test, column_transformer)
+        return x, x_test
+
     def transform(self) -> dict:
         if self.cfg.preprocessing.replace_inf is not None:
-            self.X = self.X.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
-            self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
+            repl = {
+                np.inf: self.cfg.preprocessing.replace_inf,
+                -np.inf: self.cfg.preprocessing.replace_inf
+            }
+            self.X = self.X.replace(repl).copy()
+            self.X_test = self.X_test.replace(repl).copy()
 
         if self.cfg.preprocessing.select_rows is not None:
             self.X = self.X[self.X[self.cfg.preprocessing.select_rows]].copy()
+            self.X_test = self.X_test[self.X_test[self.cfg.preprocessing.select_rows]].copy()
 
         if self.cfg.preprocessing.process_na == "drop":
             self.X = self.X.dropna()
