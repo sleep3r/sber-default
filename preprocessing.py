@@ -83,6 +83,9 @@ class DefaultTransformer:
             self.X = self.X.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
+        if self.cfg.preprocessing.select_rows is not None:
+            self.X = self.X[self.X[self.cfg.preprocessing.select_rows] is True].copy()
+
         if self.cfg.preprocessing.process_na == "drop":
             self.X = self.X.dropna()
         elif self.cfg.preprocessing.process_na == "keep":
