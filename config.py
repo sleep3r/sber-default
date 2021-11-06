@@ -1,5 +1,6 @@
 import sys
 import pydoc
+from typing import Optional
 
 from ruamel.yaml import YAML, CommentedMap
 from fire import Fire
@@ -81,9 +82,9 @@ def fit(**kwargs) -> CommentedMap:
     return update_cfg
 
 
-def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
-    kwargs = dict(d).copy()
-    if kwargs:
+def object_from_dict(d: Optional[CfgDict], parent=None, **default_kwargs):
+    if d is not None:
+        kwargs = dict(d).copy()
         object_type = kwargs.pop("type")
         params = kwargs.pop("params", None)
 
