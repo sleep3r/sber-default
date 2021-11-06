@@ -83,9 +83,9 @@ class DefaultTransformer:
             self.X = self.X.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
             self.X_test = self.X_test.replace({np.inf: self.cfg.preprocessing.replace_inf}).copy()
 
-        if self.cfg.preprocessing.features.process_na == "drop":
+        if self.cfg.preprocessing.process_na == "drop":
             self.X = self.X.dropna()
-        elif self.cfg.preprocessing.features.process_na == "keep":
+        elif self.cfg.preprocessing.process_na == "keep":
             self.X = self.X[self.X.isnull().any(1)].copy()
 
         x = self.X.drop(self.cfg.dataset.target_name, axis=1)
