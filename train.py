@@ -8,7 +8,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import cross_validate, train_test_split
+from sklearn.model_selection import cross_validate, train_test_split, GroupKFold
 
 from config import load_config, MLConfig, object_from_dict
 from dataset import DefaultDataset
@@ -174,8 +174,8 @@ def train_model(cfg: MLConfig):
         model_type=cv_params.model_type, model_params=cfg.model.params,
         nfolds=cv_params.n_folds,
         cat_features=cfg.preprocessing.cat_features,
-        verbose=cv_params.verbose
-        # k_fold_fn=GroupKFold, groups_for_split=df[train_has_fin]['seller_id'],
+        verbose=cv_params.verbose,
+        k_fold_fn=GroupKFold, groups_for_split=X_generated_preprocessed_selected[cv_params.groups_col]
     )
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()
