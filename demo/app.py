@@ -47,6 +47,7 @@ explainer, shap_values, X = explain_model()
 
 st.sidebar.header('Company features')
 model_type = st.sidebar.selectbox("Model type:", ['fin', 'no_fin'])
+
 if model_type == "fin":
     json_data, submit = fin_input()
 else:
