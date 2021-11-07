@@ -198,6 +198,10 @@ class BaseCV:
 
                         if self.save_model_name != '':
                             model.booster_.save_model(model_full_name)
+                            from utils.path import mkdir_or_exist
+                            mkdir_or_exist(f"{self.model_folder}/models_testsets/")
+                            test_path = f"{self.model_folder}/models_testsets/fold{str(i)}_seed{str(train_seed)}.csv"
+                            X_test.to_csv(test_path)
                             if flag_save_model_features:
                                 flag_save_model_features = False
                                 pd.DataFrame(columns=self.train_features).to_csv(
