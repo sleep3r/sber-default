@@ -16,7 +16,7 @@ pip install -U -r requirements.txt
 
 ```shell
 streamlit run demo/app_fin.py # for fin
-streamlit run demo/app_fin.py # for no_fin
+streamlit run demo/app_no_fin.py # for no_fin
 ```
 
 ## Training:
