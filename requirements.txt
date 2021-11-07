@@ -5,3 +5,6 @@ fire==0.4.0
 ruamel.yaml==0.17.17
 addict==2.4.0
 tqdm==4.62.3
+lightgbm==3.3.1
+shap==0.40.0
+streamlit==1.1.0
