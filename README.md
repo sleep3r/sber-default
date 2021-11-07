@@ -12,6 +12,12 @@ Sberbank default hackathon solution
 pip install -U -r requirements.txt
 ```
 
+## Demo Up:
+
+```shell
+streamlit run demo/app.py
+```
+
 ## Training:
 
 ```shell
