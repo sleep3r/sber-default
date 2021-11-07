@@ -8,3 +8,4 @@ tqdm==4.62.3
 lightgbm==3.3.1
 shap==0.40.0
 streamlit==1.1.0
+matplotlib==3.4.3
