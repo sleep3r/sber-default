@@ -182,7 +182,7 @@ def train_model(cfg: MLConfig):
         verbose=cv_params.verbose,
         k_fold_fn=object_from_dict(cv_params.k_fold_fn),
         groups_for_split=X_generated_preprocessed[cv_params.groups_col] if cv_params.groups_col else None,
-        save_model_name=cfg.exp_name,
+        save_model_name="models",
         model_folder=str(meta["exp_dir"])
     )
 

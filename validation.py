@@ -71,7 +71,7 @@ class BaseCV:
 
         if self.save_model_name != '':
             try:
-                os.mkdir(self.model_folder + self.save_model_name)
+                os.mkdir(self.model_folder + "/" + self.save_model_name)
             except Exception:
                 pass
 
