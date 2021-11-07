@@ -18,9 +18,16 @@ class DefaultGenerator:
     def _group_duplicates(self, X: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
         X['test_flg'] = 0
         X_test['test_flg'] = 1
-        subset = [col for col in X.columns if
-                  col not in self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]]
+
+        skip_cols = self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]
+        subset = [col for col in X.columns if col not in skip_cols]
         df = pd.concat([X, X_test], sort=False)
+
+        # TODO: remove dirty hack for comparsion of duplicates
+        df.loc[df['ul_staff_range'] == '[1-100]', 'ul_staff_range'] = 1
+        df.loc[df['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
+        df.loc[df['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
+
         df["duplicates_group"] = df.fillna(-1).groupby(subset).ngroup()
         return df[df.test_flg == 0].copy(), df[df.test_flg == 1].copy()
 
