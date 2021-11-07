@@ -12,7 +12,7 @@ Sberbank default hackathon solution
 pip install -U -r requirements.txt
 ```
 
-## Demo Up:
+## Demo Local Up:
 
 ```shell
 streamlit run demo/app_fin.py # for fin
@@ -27,7 +27,7 @@ python train.py --config=./configs/forest.yml \
                 --validation.cutoff=0.04
 ```
 
-## Grid training from terminal:
+## Grid Training from Terminal:
 
 ```shell
 declare -a penaltyes=("l1" "l2") 
