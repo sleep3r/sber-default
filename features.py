@@ -23,12 +23,16 @@ class DefaultGenerator:
         subset = [col for col in X.columns if col not in skip_cols]
         df = pd.concat([X, X_test], sort=False)
 
-        # TODO: remove dirty hack for comparsion of duplicates
+        # TODO: remove dirty hack for comparison of duplicates
         df.loc[df['ul_staff_range'] == '[1-100]', 'ul_staff_range'] = 1
         df.loc[df['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
         df.loc[df['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
 
         df["duplicates_group"] = df.fillna(-1).groupby(subset).ngroup()
+
+        df.loc[df['ul_staff_range'] == 1, 'ul_staff_range'] = '[1-100]'
+        df.loc[df['ul_staff_range'] == 2, 'ul_staff_range'] = '(100-500]'
+        df.loc[df['ul_staff_range'] == 3, 'ul_staff_range'] = '> 500'
         return df[df.test_flg == 0].copy(), df[df.test_flg == 1].copy()
 
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
