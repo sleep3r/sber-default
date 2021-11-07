@@ -186,6 +186,8 @@ def train_model(cfg: MLConfig):
 
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
     meta["metrics"]["CV_score"] = cv_score.mean()
+    meta["metrics"]["train_score"] = train_score
+    meta["metrics"]["train_score_std"] = train_score_std
 
     submit_df = make_submit(
         cfg=cfg,
