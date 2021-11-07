@@ -93,7 +93,7 @@ class BaseCV:
             nclasses = self.model_params['num_class']
             pred_cols = ['pred_cl' + str(i) for i in range(nclasses)]
 
-        flag_save_model_features = True
+        flag_save_model_features = False
         train_score_mask = ''
         cv_score_mask = 0
         kick = ''
@@ -202,7 +202,8 @@ class BaseCV:
                             if flag_save_model_features:
                                 flag_save_model_features = False
                                 pd.DataFrame(columns=self.train_features).to_csv(
-                                    self.model_folder + self.save_model_name + '/train_features.txt', index=False)
+                                    self.model_folder + self.save_model_name + '/train_features.txt', index=False
+                                )
                 else:
                     model = object_from_dict(self.cfg.model)
                     fit_params = self.cfg.model.get("fit_params", {})
