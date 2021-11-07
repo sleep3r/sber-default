@@ -183,7 +183,7 @@ def train_model(cfg: MLConfig):
         k_fold_fn=object_from_dict(cv_params.k_fold_fn),
         groups_for_split=X_generated_preprocessed[cv_params.groups_col] if cv_params.groups_col else None,
         save_model_name=cfg.exp_name,
-        model_folder=meta["exp_dir"]
+        model_folder=str(meta["exp_dir"])
     )
 
     cv_score, train_score, train_score_std, train_predictions, test_predictions = cv.run()
