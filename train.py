@@ -69,13 +69,12 @@ def log_report(meta: dict, exp_dir: Path) -> None:
     for name, value in meta["metrics"].items():
         print(f"{name} = {value}")
 
+    import git
+    repo = git.Repo(search_parent_directories=True)
+    meta["sha"] = repo.head.object.hexsha
+
     with open(exp_dir / "report.json", "w") as f:
         json.dump(meta, f, indent=4)
-
-
-def log_best_model(best_estimator, exp_dir: Path) -> None:
-    with open(exp_dir / "best.pkl", "wb") as f:
-        pickle.dump(best_estimator, f)
 
 
 def make_submit(cfg, test_predictions: pd.DataFrame, X_test, cutoff: float) -> pd.DataFrame:
@@ -98,14 +97,13 @@ def log_dataset(X: pd.DataFrame, y: pd.Series, X_test: pd.DataFrame, exp_dir: Pa
 
 
 def log_submit(submit_df: pd.DataFrame, exp_dir: Path) -> None:
-    submit_df.to_csv(exp_dir / 'PD-submit.csv', index=False, sep=';')  # noqa
+    submit_df.to_csv(exp_dir / 'submit.csv', index=False, sep=';')  # noqa
 
 
-def log_artifacts(meta: dict, best_estimator, X: pd.DataFrame, X_test, y, submit_df: pd.DataFrame) -> None:
+def log_artifacts(meta: dict, X: pd.DataFrame, X_test, y, submit_df: pd.DataFrame) -> None:
     exp_dir = meta.pop("exp_dir")
 
     log_report(meta, exp_dir)
-    log_best_model(best_estimator, exp_dir)
     log_dataset(X, y, X_test, exp_dir)
     log_submit(submit_df, exp_dir)
 
@@ -197,7 +195,7 @@ def train_model(cfg: MLConfig):
         cutoff=cfg.validation.cutoff
     )
     log_artifacts(
-        meta=meta, best_estimator=model,
+        meta=meta,
         X=X_generated_preprocessed_selected, X_test=X_test_generated_preprocessed_selected, y=y,
         submit_df=submit_df
     )

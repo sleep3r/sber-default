@@ -166,8 +166,7 @@ class BaseCV:
 
                 i += 1
 
-                model_full_name = self.model_folder + self.save_model_name + '/fold' + str(i) + '_seed' + str(
-                    train_seed) + '.model'
+                model_full_name = f"{self.model_folder}/{self.save_model_name}/fold{str(i)}_seed{str(train_seed)}.model"
 
                 X_train, X_test = X[self.train_features].iloc[train_index], X[self.train_features].iloc[test_index]
                 y_train, y_test = self.y.iloc[train_index], self.y.iloc[test_index]
