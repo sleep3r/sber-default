@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 st.set_page_config(page_title="GSBxSber Hackathon Demo")
 
 st.title('GSBxSber Hackathon Demo')
-st.write('''Realtime scoring API default prediction model for fin companies''')
+st.write('''Realtime scoring API default prediction model''')
 
 
 def user_input_features():
