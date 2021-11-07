@@ -166,8 +166,7 @@ class BaseCV:
 
                 i += 1
 
-                model_full_name = self.model_folder + self.save_model_name + '/fold' + str(i) + '_seed' + str(
-                    train_seed) + '.model'
+                model_full_name = f"{self.model_folder}/{self.save_model_name}/fold{str(i)}_seed{str(train_seed)}.model"
 
                 X_train, X_test = X[self.train_features].iloc[train_index], X[self.train_features].iloc[test_index]
                 y_train, y_test = self.y.iloc[train_index], self.y.iloc[test_index]
@@ -199,6 +198,10 @@ class BaseCV:
 
                         if self.save_model_name != '':
                             model.booster_.save_model(model_full_name)
+                            from utils.path import mkdir_or_exist
+                            mkdir_or_exist(f"{self.model_folder}/models_testsets/")
+                            test_path = f"{self.model_folder}/models_testsets/fold{str(i)}_seed{str(train_seed)}.csv"
+                            X_test.to_csv(test_path)
                             if flag_save_model_features:
                                 flag_save_model_features = False
                                 pd.DataFrame(columns=self.train_features).to_csv(
