@@ -1,10 +1,5 @@
 import streamlit as st
-import requests
-import datetime
 import shap
-import json
-import pickle
-import pandas as pd
 import streamlit.components.v1 as components
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
@@ -19,8 +14,13 @@ def user_input_features():
     st.sidebar.header('Company features')
 
     input_features = {}
-    input_features["ul_capital_sum"] = st.sidebar.number_input('ul_capital_sum', 0, step=1)
-    input_features["ul_founders_cnt"] = st.sidebar.number_input('ul_founders_cnt', 0, step=1)
+    input_features['model_type'] = st.sidebar.selectbox("Model type:", ['fin', 'no_fin'])
+
+    if input_features['model_type'] == "fin":
+        input_features["ul_capital_sum"] = st.sidebar.number_input('ul_capital_sum', 0, step=1)
+        input_features["ul_founders_cnt"] = st.sidebar.number_input('ul_founders_cnt', 0, step=1)
+    elif input_features['model_type'] == "no_fin":
+        input_features["ul_capital_sum"] = st.sidebar.number_input('ul_capital_sum', 0, step=1)
     return [input_features]
 
 
@@ -44,17 +44,16 @@ def explain_model_prediction():
 json_data = user_input_features()
 
 submit = st.sidebar.button('Get predictions')
-if submit:
-    p, shap_values, X = explain_model_prediction()
-    st.subheader('Model Prediction Interpretation Plot')
-    st_shap(p)
+p, shap_values, X = explain_model_prediction()
+st.subheader('Model Prediction Interpretation Plot')
+st_shap(p, height=500)
 
-    st.subheader('Summary Plot 1')
-    fig, ax = plt.subplots(nrows=1, ncols=1)
-    shap.summary_plot(shap_values[1], X)
-    st.pyplot(fig)
+st.subheader('Summary Plot 1')
+fig, ax = plt.subplots(nrows=1, ncols=1)
+shap.summary_plot(shap_values[1], X)
+st.pyplot(fig)
 
-    st.subheader('Summary Plot 2')
-    fig, ax = plt.subplots(nrows=1, ncols=1)
-    shap.summary_plot(shap_values[1], X, plot_type='bar')
-    st.pyplot(fig)
+st.subheader('Summary Plot 2')
+fig, ax = plt.subplots(nrows=1, ncols=1)
+shap.summary_plot(shap_values[1], X, plot_type='bar')
+st.pyplot(fig)

@@ -1,1 +1,1 @@
-web: sh ./demo/setup.sh && [ "$MODEL" = fin ] && streamlit run ./demo/app_fin.py || streamlit run ./demo/app_no_fin.py
+web: sh ./demo/setup.sh && streamlit run ./demo/app.py
