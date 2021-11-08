@@ -10,12 +10,12 @@ class DefaultGenerator:
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def _drop_duplicates(self, X: pd.DataFrame) -> pd.DataFrame:
+    def __drop_duplicates(self, X: pd.DataFrame) -> pd.DataFrame:
         subset = [col for col in X.columns if
                   col not in self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]]
         return X.drop_duplicates(subset, keep="last")
 
-    def _group_duplicates(self, X: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+    def __group_duplicates(self, X: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
         X['test_flg'] = 0
         X_test['test_flg'] = 1
 
@@ -23,17 +23,15 @@ class DefaultGenerator:
         subset = [col for col in X.columns if col not in skip_cols]
         df = pd.concat([X, X_test], sort=False)
 
-        # TODO: remove dirty hack for comparison of duplicates
+        # TODO: checkout this hack for comparison of duplicates
         df.loc[df['ul_staff_range'] == '[1-100]', 'ul_staff_range'] = 1
         df.loc[df['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
         df.loc[df['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
 
-        df["duplicates_group"] = df.fillna(-1).groupby(subset).ngroup()
-
-        df.loc[df['ul_staff_range'] == 1, 'ul_staff_range'] = '[1-100]'
-        df.loc[df['ul_staff_range'] == 2, 'ul_staff_range'] = '(100-500]'
-        df.loc[df['ul_staff_range'] == 3, 'ul_staff_range'] = '> 500'
-        return df[df.test_flg == 0].copy(), df[df.test_flg == 1].copy()
+        duplicates_group = df.fillna(-1).groupby(subset).ngroup()
+        X["duplicates_group"] = duplicates_group[:X.shape[0]].values
+        X_test["duplicates_group"] = duplicates_group[X.shape[0]:].values
+        return X.copy(), X_test.copy()
 
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
@@ -98,9 +96,9 @@ class DefaultGenerator:
         X_test = self._generate(self.X_test)
 
         if self.cfg.features_generation.duplicates == "drop":
-            X = self._drop_duplicates(X)
+            X = self.__drop_duplicates(X)
         elif self.cfg.features_generation.duplicates == "group":
-            X, X_test = self._group_duplicates(X, X_test)
+            X, X_test = self.__group_duplicates(X, X_test)
         return X, X_test
 
 
