@@ -45,3 +45,11 @@ do
                      --model.params.C $C
 done
 ```
+
+## Merge submits:
+```shell
+ python ./scripts/merge_submits.py --sub_path_1=/home/sleep3r/finsub.csv \
+                                   --sub_path_2=/home/sleep3r/nofinsub.csv \
+                                   --final_sub_path=/home/sleep3r/result_submit.csv
+
+```
