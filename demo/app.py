@@ -55,6 +55,8 @@ else:
 
 if submit:
     st.subheader('Model Prediction Interpretation Plot')
+    import os
+    st.write(os.listdir("./"))
     p = shap.force_plot(explainer.expected_value[1], shap_values[1], X)
     st_shap(p, height=500)
 

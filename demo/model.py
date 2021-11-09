@@ -1,8 +1,8 @@
 from typing import List
+from pathlib import Path
 
 import lightgbm
 import numpy as np
-from pathlib import Path
 
 
 class LGBMCVModel:
@@ -13,12 +13,12 @@ class LGBMCVModel:
         self.__load_models()
 
     def __load_models(self):
-        for model in (self.run_path / "models").iterdir():
-            model = lightgbm.Booster(model_file=model)
+        for model_path in (self.run_path / "models").iterdir():
+            model = lightgbm.Booster(model_file=str(model_path))
             self.models.append(model)
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict_proba(self, X: np.ndarray) -> np.ndarray:
         predictions = []
         for model in self.models:
-            predictions.append(model.predict_proba(X))
-        return np.array(predictions) / len(self.models)
+            predictions.append(model.predict(X))
+        return np.mean(predictions, axis=0)
