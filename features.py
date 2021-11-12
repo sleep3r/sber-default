@@ -33,6 +33,55 @@ class DefaultGenerator:
         X_test["duplicates_group"] = duplicates_group[X.shape[0]:].values
         return X.copy(), X_test.copy()
 
+    def __knn_target(self, X, X_test):
+        from sklearn.impute import SimpleImputer
+        from sklearn.neighbors import NearestNeighbors
+        from config import load_config, MLConfig, object_from_dict
+
+        df = pd.concat([X, X_test], sort=False)
+        x = df.drop(self.cfg.dataset.target_name, axis=1)
+
+        repl = {
+            np.inf: 0,
+            -np.inf: 0
+        }
+        x = x.replace(repl).copy()
+
+        x.loc[x['ul_staff_range'] == '[1-100]', 'ul_staff_range'] = 1
+        x.loc[x['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
+        x.loc[x['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
+
+        print("fitting imputer")
+        im = SimpleImputer(strategy="median")
+        x = im.fit_transform(x)
+        x = pd.DataFrame(x, columns=X_test.columns)
+
+        test_indexes = []
+        test_targets = []
+
+        k_fold = object_from_dict(self.cfg.validation.cv_params.k_fold_fn)
+        from sklearn.model_selection import GroupKFold
+        k_fold = GroupKFold()
+
+        groups_for_split = x[self.cfg.validation.cv_params.groups_col]
+        for train_index, test_index in k_fold.split(x, groups=groups_for_split):
+            x_fold = x.iloc[train_index]
+            targets = []
+
+            print("nnn search")
+            nn = NearestNeighbors(n_neighbors=100)
+            nn.fit(x_fold.values)
+            from tqdm import tqdm
+            for i in tqdm(range(len(x.iloc[test_index])), total=len(x.iloc[test_index])):
+                idx = nn.kneighbors(x.iloc[test_index].values[i].reshape(1, -1), return_distance=False)[0]
+                mean_target = df.iloc[idx][self.cfg.dataset.target_name].mean()
+                targets.append(mean_target)
+            test_indexes.extend(list(test_index))
+            test_targets.extend(list(targets))
+
+        df.loc[df.iloc[test_indexes].index, "mean_targets_nn"] = test_targets
+        return df[df.test_flg == 0].copy(), df[df.test_flg == 1].copy()
+
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
 
@@ -99,6 +148,8 @@ class DefaultGenerator:
             X = self.__drop_duplicates(X)
         elif self.cfg.features_generation.duplicates == "group":
             X, X_test = self.__group_duplicates(X, X_test)
+
+        X, X_test = self.__knn_target(X, X_test)
         return X, X_test
 
 
