@@ -7,6 +7,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
+import shap.plots
 from sklearn.model_selection import train_test_split
 
 from config import load_config, MLConfig, object_from_dict
@@ -16,6 +17,7 @@ from features import DefaultGenerator, DefaultSelector
 from validation import validate, BaseCV
 from utils.env import collect_env
 from utils.path import mkdir_or_exist
+from vizualization import shap_vizualization, plots_for_distr
 
 warnings.simplefilter('ignore')
 
@@ -156,6 +158,8 @@ def train_model(cfg: MLConfig):
         stratify=y, test_size=cfg.validation.test_size, shuffle=True
     )
 
+    plots_for_distr(X_train, y_train,'aboba')
+
     fit_params = cfg.model.get("fit_params", {})
     if cfg.model.eval_set_param:
         fit_params[cfg.model.eval_set_param] = (X_val, y_val)
@@ -188,6 +192,13 @@ def train_model(cfg: MLConfig):
     meta["metrics"]["train_score"] = train_score
     meta["metrics"]["train_score_std"] = train_score_std
 
+    print('vizualize shap...')
+    shap_vizualization(model, X_train, y_train, X_val, y_val,
+                       base_features=X_train.columns,
+                       file_name=cfg.work_dir+'/shap_'+cfg.exp_name+'.png',
+                       file_name2=cfg.work_dir + '/shap_top_features_' + cfg.exp_name + '.png',
+                       num_points_to_shap=2000)
+
     submit_df = make_submit(
         cfg=cfg,
         test_predictions=test_predictions, X_test=X_test_generated,
@@ -198,8 +209,6 @@ def train_model(cfg: MLConfig):
         X=X_generated_preprocessed_selected, X_test=X_test_generated_preprocessed_selected, y=y,
         submit_df=submit_df
     )
-
-
 if __name__ == "__main__":
     cfg: MLConfig = load_config()
     train_model(cfg)
