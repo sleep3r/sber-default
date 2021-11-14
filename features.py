@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import RobustScaler, StandardScaler
 
 from config import MLConfig
 
@@ -33,6 +35,27 @@ class DefaultGenerator:
         X_test["duplicates_group"] = duplicates_group[X.shape[0]:].values
         return X.copy(), X_test.copy()
 
+    def __pca(self, X: pd.DataFrame) -> pd.DataFrame:
+        X_copy = X.copy()
+        X_copy.loc[X_copy['ul_staff_range'] == '[1-100]', 'ul_staff_range'] = 1
+        X_copy.loc[X_copy['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
+        X_copy.loc[X_copy['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
+
+        repl = {
+            np.inf: 0,
+            -np.inf: 0
+        }
+        X_copy = X_copy.replace(repl).copy()
+        X_copy = X_copy.fillna(X_copy.median())
+        from sklearn.preprocessing import RobustScaler, StandardScaler
+
+        pca = PCA(n_components=self.cfg.features_generation.pca_features)
+        components = pd.DataFrame(
+            pca.fit_transform(StandardScaler().fit_transform(X_copy)),
+            columns=[f"pca_{i}" for i in range(1, self.cfg.features_generation.pca_features + 1)]
+        )
+        return pd.concat([X, components], axis=1)
+
     def __knn_target(self, X, X_test):
         from sklearn.impute import SimpleImputer
         from sklearn.neighbors import NearestNeighbors
@@ -51,13 +74,11 @@ class DefaultGenerator:
         x.loc[x['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
         x.loc[x['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
 
-        print("fitting imputer")
         im = SimpleImputer(strategy="median")
         x = im.fit_transform(x)
         x = pd.DataFrame(x, columns=X_test.columns)
 
-        test_indexes = []
-        test_targets = []
+        COMP = pd.DataFrame(columns=[f"pca_{i}" for i in range(1, self.cfg.features_generation.pca_features + 1)])
 
         k_fold = object_from_dict(self.cfg.validation.cv_params.k_fold_fn)
         from sklearn.model_selection import GroupKFold
@@ -66,20 +87,16 @@ class DefaultGenerator:
         groups_for_split = x[self.cfg.validation.cv_params.groups_col]
         for train_index, test_index in k_fold.split(x, groups=groups_for_split):
             x_fold = x.iloc[train_index]
-            targets = []
 
-            print("nnn search")
-            nn = NearestNeighbors(n_neighbors=100)
-            nn.fit(x_fold.values)
-            from tqdm import tqdm
-            for i in tqdm(range(len(x.iloc[test_index])), total=len(x.iloc[test_index])):
-                idx = nn.kneighbors(x.iloc[test_index].values[i].reshape(1, -1), return_distance=False)[0]
-                mean_target = df.iloc[idx][self.cfg.dataset.target_name].mean()
-                targets.append(mean_target)
-            test_indexes.extend(list(test_index))
-            test_targets.extend(list(targets))
-
-        df.loc[df.iloc[test_indexes].index, "mean_targets_nn"] = test_targets
+            pca = PCA(n_components=self.cfg.features_generation.pca_features)
+            pca.fit(StandardScaler().fit_transform(x_fold))
+            components = pd.DataFrame(
+                pca.transform(StandardScaler().fit_transform(x.iloc[test_index])),
+                columns=[f"pca_{i}" for i in range(1, self.cfg.features_generation.pca_features + 1)],
+                index=x.iloc[test_index].index
+            )
+            COMP = COMP.append(components)
+        df = pd.concat([df, COMP.sort_index()])
         return df[df.test_flg == 0].copy(), df[df.test_flg == 1].copy()
 
     def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
