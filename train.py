@@ -86,7 +86,7 @@ def make_submit(cfg, test_predictions: pd.DataFrame, X_test, cutoff: float) -> p
     else:
         index = X_test.record_id.values
 
-    answ_df = pd.DataFrame(index, columns=["id"])
+    answ_df = pd.DataFrame(index, columns=["ID"])
     answ_df['predict'] = (probas > cutoff).astype(int)
     return answ_df
 
@@ -158,8 +158,6 @@ def train_model(cfg: MLConfig):
         stratify=y, test_size=cfg.validation.test_size, shuffle=True
     )
 
-    plots_for_distr(X_train, y_train,'aboba')
-
     fit_params = cfg.model.get("fit_params", {})
     if cfg.model.eval_set_param:
         fit_params[cfg.model.eval_set_param] = (X_val, y_val)
@@ -197,7 +195,8 @@ def train_model(cfg: MLConfig):
                        base_features=X_train.columns,
                        file_name=cfg.work_dir+'/shap_'+cfg.exp_name+'.png',
                        file_name2=cfg.work_dir + '/shap_top_features_' + cfg.exp_name + '.png',
-                       num_points_to_shap=2000)
+                       num_points_to_shap=1000,
+                       model_type=cfg.exp_name)
 
     submit_df = make_submit(
         cfg=cfg,
@@ -209,6 +208,8 @@ def train_model(cfg: MLConfig):
         X=X_generated_preprocessed_selected, X_test=X_test_generated_preprocessed_selected, y=y,
         submit_df=submit_df
     )
+
+
 if __name__ == "__main__":
     cfg: MLConfig = load_config()
     train_model(cfg)

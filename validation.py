@@ -5,11 +5,17 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score, classification_report, accuracy_score, precision_score, recall_score, \
-    f1_score, balanced_accuracy_score
+    f1_score, balanced_accuracy_score, precision_recall_curve, auc
 from sklearn.model_selection import StratifiedKFold, GroupKFold
 import lightgbm
 
+
 from config import MLConfig, object_from_dict
+
+
+def pr_auc_score(y_true, y_score):
+    precision, recall, thresholds = precision_recall_curve(y_true, y_score)
+    return auc(recall, precision)
 
 
 def validate(probas: np.ndarray, y_val: np.ndarray, cutoff: float) -> Dict[str, float]:
@@ -23,6 +29,7 @@ def validate(probas: np.ndarray, y_val: np.ndarray, cutoff: float) -> Dict[str, 
     metrics["precision"] = precision_score(y_val, preds)
     metrics["recall"] = recall_score(y_val, preds)
     metrics["F1"] = f1_score(y_val, preds)
+    metrics["precision_recall_auc"] = pr_auc_score(y_val, probas[:,1])
     return metrics
 
 
