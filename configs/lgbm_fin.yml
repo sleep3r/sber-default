@@ -26,6 +26,7 @@ features_generation: # (!!!) don't forget to add generated columns to preprocess
   duplicates: group # adds 'duplicates_group' column if group
   mark_fin: ar_revenue # adds 'has_fin' by no nan rows of column specified
   mark_nofin: null # adds 'no_fin' by nan rows of column specified
+  pca_features: 10 # adds 'pca_{i}' column with pca features
 
 
 preprocessing:
@@ -42,7 +43,9 @@ preprocessing:
       'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
       'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
 
-      'duplicates_group', "has_fin"
+      'duplicates_group', "has_fin",
+
+      'pca_1', 'pca_2', 'pca_3', 'pca_4', 'pca_5', 'pca_6', 'pca_7', 'pca_8', 'pca_9', 'pca_10'
   ]
   drop_features: [ "record_id", ]
 
@@ -70,6 +73,8 @@ features_selection:
       'ab_cash_and_securities', 'ab_own_capital',
       'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
       'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
+
+      'pca_1', 'pca_2', 'pca_3', 'pca_4', 'pca_5', 'pca_6', 'pca_7', 'pca_8', 'pca_9', 'pca_10'
   ]
 
 model:

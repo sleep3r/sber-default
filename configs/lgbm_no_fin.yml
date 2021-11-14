@@ -26,6 +26,7 @@ features_generation: # (!!!) don't forget to add generated columns to preprocess
   duplicates: group # adds 'duplicates_group' column if group
   mark_fin: null # adds 'has_fin' by no nan rows of column specified
   mark_nofin: ar_revenue # adds 'no_fin' by nan rows of column specified
+  pca_features: 3 # adds 'pca_{i}' column with pca features
 
 
 preprocessing:
@@ -37,12 +38,11 @@ preprocessing:
   cont_features: [ ]
   skewed_features: [ ]
   other_features: [
-      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
-      'ab_cash_and_securities', 'ab_own_capital',
-      'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-      'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
+      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'adr_actual_age',
 
-      'duplicates_group', "no_fin"
+      'duplicates_group', "no_fin",
+
+      'pca_1', 'pca_2', 'pca_3'
   ]
   drop_features: [ "record_id", ]
 
@@ -66,10 +66,8 @@ preprocessing:
 
 features_selection:
   selected: [
-      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
-      'ab_cash_and_securities', 'ab_own_capital',
-      'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-      'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a'
+      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'adr_actual_age',
+      'pca_1', 'pca_2', 'pca_3'
   ]
 
 

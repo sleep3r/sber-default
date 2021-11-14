@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 
 from config import MLConfig
 
@@ -9,6 +10,27 @@ class DefaultGenerator:
         self.cfg = cfg
         self.X = X.copy()
         self.X_test = X_test.copy()
+
+    def __pca(self, X: pd.DataFrame) -> pd.DataFrame:
+        X_copy = X.copy()
+        X_copy.loc[X_copy['ul_staff_range'] == '[1-100]', 'ul_staff_range'] = 1
+        X_copy.loc[X_copy['ul_staff_range'] == '(100-500]', 'ul_staff_range'] = 2
+        X_copy.loc[X_copy['ul_staff_range'] == '> 500', 'ul_staff_range'] = 3
+
+        repl = {
+            np.inf: 0,
+            -np.inf: 0
+        }
+        X_copy = X_copy.replace(repl).copy()
+        X_copy = X_copy.fillna(X_copy.median())
+        from sklearn.preprocessing import RobustScaler, StandardScaler
+
+        pca = PCA(n_components=self.cfg.features_generation.pca_features)
+        components = pd.DataFrame(
+            pca.fit_transform(StandardScaler().fit_transform(X_copy)),
+            columns=[f"pca_{i}" for i in range(1, self.cfg.features_generation.pca_features + 1)]
+        )
+        return pd.concat([X, components], axis=1)
 
     def __drop_duplicates(self, X: pd.DataFrame) -> pd.DataFrame:
         subset = [col for col in X.columns if
@@ -99,6 +121,10 @@ class DefaultGenerator:
             X = self.__drop_duplicates(X)
         elif self.cfg.features_generation.duplicates == "group":
             X, X_test = self.__group_duplicates(X, X_test)
+
+        if self.cfg.features_generation.pca_features:
+            X = self.__pca(X)
+            X_test = self.__pca(X_test)
         return X, X_test
 
 
