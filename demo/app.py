@@ -37,7 +37,6 @@ def st_shap(plot, height=None):
     components.html(shap_html, height=height)
 
 
-@st.cache(suppress_st_warning=True, show_spinner=False)
 def plot_graphs(shap_values, X_test):
     st.subheader('Summary Plot 1')
     fig, ax = plt.subplots(nrows=1, ncols=1)
