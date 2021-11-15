@@ -66,7 +66,7 @@ def plot_model(cv_model):
         figsize=(20, 15)
     )
     fig = plt.gcf()
-    fig.set_size_inches(35, 30)
+    fig.set_size_inches(20, 15)
     st.pyplot(fig)
 
 
