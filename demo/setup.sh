@@ -15,4 +15,7 @@ textColor='#ffffff'\n\
 showPyplotGlobalUse=false\n\
 \n\
 " > ~/.streamlit/config.toml
+
+add-apt-repository universe
+apt update
 apt install graphviz
