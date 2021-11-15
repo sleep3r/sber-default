@@ -1,6 +1,7 @@
 from functools import reduce
 from pathlib import Path
 
+import lightgbm as lgb
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -37,7 +38,7 @@ def st_shap(plot, height=None):
     components.html(shap_html, height=height)
 
 
-def plot_graphs(shap_values, X_test):
+def plot_shap_graphs(shap_values, X_test):
     st.subheader('Summary Plot 1')
     fig, ax = plt.subplots(nrows=1, ncols=1)
     shap.summary_plot(shap_values[1], X_test)
@@ -54,6 +55,19 @@ def plot_prediction(submit, explainer, X_test, shap_values):
         st.subheader('Model Prediction Interpretation Plot')
         p = shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :])
         st_shap(p, height=150)
+
+
+def plot_model(cv_model):
+    st.subheader('Model tree')
+    ax = lgb.plot_tree(
+        [*cv_model.models.values()][0],
+        tree_index=1,
+        show_info=['split_gain'],
+        figsize=(20, 15)
+    )
+    fig = plt.gcf()
+    fig.set_size_inches(35, 30)
+    st.pyplot(fig)
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
@@ -78,18 +92,24 @@ def explain_model(checkpoint_path: str):
 
     X_test = reduce(lambda a, b: a.append(b), test_sets)
     shap_values = np.concatenate(all_shap_values, axis=1)
-    return shap_values, X_test, explainer
+    return shap_values, X_test, explainer, cv_model
 
 
 model_type = st.sidebar.selectbox("Model:", ['fin', 'no_fin'])
 st.sidebar.header('Company features')
 if model_type == "fin":
     json_data, submit = fin_input()
-    shap_values, X_test, explainer = explain_model("/app/checkpoints/fin")
+    shap_values, X_test, explainer, cv_model = explain_model(
+        "/app/checkpoints/fin"
+    )
     plot_prediction(submit, explainer, X_test, shap_values)
-    plot_graphs(shap_values, X_test)
+    plot_shap_graphs(shap_values, X_test)
+    plot_model(cv_model)
+
 else:
     json_data, submit = no_fin_input()
-    shap_values, X_test, explainer = explain_model("/app/checkpoints/no_fin")
+    shap_values, X_test, explainer, cv_model = explain_model(
+        "/app/checkpoints/no_fin"
+    )
     plot_prediction(submit, explainer, X_test, shap_values)
-    plot_graphs(shap_values, X_test)
+    plot_shap_graphs(shap_values, X_test)
