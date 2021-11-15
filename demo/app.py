@@ -88,9 +88,9 @@ if model_type == "fin":
     json_data, submit = fin_input()
     shap_values, X_test, explainer = explain_model("/app/checkpoints/fin")
     plot_prediction(submit, explainer, X_test, shap_values)
-    plot_graphs(shap_values, X_test, explainer, submit)
+    plot_graphs(shap_values, X_test)
 else:
     json_data, submit = no_fin_input()
     shap_values, X_test, explainer = explain_model("/app/checkpoints/no_fin")
     plot_prediction(submit, explainer, X_test, shap_values)
-    plot_graphs(shap_values, X_test, explainer, submit)
+    plot_graphs(shap_values, X_test)
