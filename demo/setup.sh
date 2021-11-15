@@ -8,7 +8,7 @@ enableCORS = false\n\
 [theme]\n\
 primaryColor='#ffffff'\n\
 backgroundColor='#bc3e22'\n\
-secondaryBackgroundColor='#3b3d3d'\n\
+secondaryBackgroundColor='#6e757c'\n\
 textColor='#ffffff'\n\
 \n\
 [deprecation]\n\
