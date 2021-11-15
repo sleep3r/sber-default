@@ -25,12 +25,12 @@ def input(cv_model: LGBMCVModel, model_type: str):
 
 
 def plot_shap_graphs(shap_values, X_test):
-    st.subheader('Summary Plot 1')
+    st.subheader('SHAP Summary Plot')
     fig, ax = plt.subplots(nrows=1, ncols=1)
     shap.summary_plot(shap_values[1], X_test)
     st.pyplot(fig)
 
-    st.subheader('Summary Plot 2')
+    st.subheader('SHAP Summary Bar Plot')
     fig, ax = plt.subplots(nrows=1, ncols=1)
     shap.summary_plot(shap_values[1], X_test, plot_type='bar')
     st.pyplot(fig)
@@ -46,17 +46,34 @@ def plot_prediction(submit, explainer, X_test, shap_values):
         st.pyplot(bbox_inches='tight', dpi=300, pad_inches=0)
 
 
-def plot_model(cv_model):
-    st.subheader('Model tree')
+def plot_importance(cv_model: LGBMCVModel):
+    st.subheader('Feature Importance')
+    importance_type = st.selectbox('Select the desired importance type', ('auto', 'split', 'gain'), index=0)
+    ax = lgb.plot_importance(
+        [*cv_model.models.values()][0],
+        importance_type=importance_type,
+    )
+    fig = plt.gcf()
+    st.pyplot(fig)
+
+
+def plot_model_tree(cv_model):
+    st.subheader('Model Tree')
     ax = lgb.plot_tree(
         [*cv_model.models.values()][0],
         tree_index=1,
         show_info=['split_gain'],
-        figsize=(20, 15)
+        dpi=600
     )
     fig = plt.gcf()
-    fig.set_size_inches(20, 15)
-    st.pyplot(fig, dpi=300)
+    st.pyplot(fig, dpi=600)
+
+
+def plot_dependence(shap_values, X_test):
+    for feature_name in X_test.columns:
+        shap.dependence_plot(feature_name, shap_values[1], X_test, show=False)
+        st.pyplot()
+        plt.clf()
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
@@ -92,8 +109,10 @@ if model_type == "fin":
     )
     json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
+    plot_importance(cv_model)
     plot_shap_graphs(shap_values, X_test)
-    plot_model(cv_model)
+    plot_model_tree(cv_model)
+    plot_dependence(shap_values, X_test)
 
 else:
     shap_values, X_test, explainer, cv_model = explain_model(
@@ -102,4 +121,4 @@ else:
     json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
     plot_shap_graphs(shap_values, X_test)
-    plot_model(cv_model)
+    plot_dependence(shap_values, X_test)
