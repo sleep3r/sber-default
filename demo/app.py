@@ -76,7 +76,7 @@ def plot_dependence(shap_values, X_test):
         plt.clf()
 
 
-@st.cache(suppress_st_warning=True, show_spinner=False)
+# @st.cache(suppress_st_warning=True, show_spinner=False)
 def explain_model(checkpoint_path: str):
     cv_model = LGBMCVModel(checkpoint_path)
     all_shap_values = []
