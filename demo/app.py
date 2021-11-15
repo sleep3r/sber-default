@@ -113,7 +113,6 @@ if model_type == "fin":
     plot_shap_graphs(shap_values, X_test)
     plot_model_tree(cv_model)
     plot_dependence(shap_values, X_test)
-
 else:
     shap_values, X_test, explainer, cv_model = explain_model(
         "/app/checkpoints/no_fin"
@@ -124,3 +123,7 @@ else:
     plot_shap_graphs(shap_values, X_test)
     plot_dependence(shap_values, X_test)
     plot_dependence(shap_values, X_test)
+
+del cv_model
+del X_test
+del shap_values
