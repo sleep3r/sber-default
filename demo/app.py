@@ -37,6 +37,7 @@ def st_shap(plot, height=None):
     components.html(shap_html, height=height)
 
 
+@st.cache(suppress_st_warning=True, show_spinner=False)
 def plot_graphs(shap_values, X_test, explainer, submit):
     if submit:
         st.subheader('Model Prediction Interpretation Plot')
