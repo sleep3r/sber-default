@@ -120,5 +120,7 @@ else:
     )
     json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
+    plot_importance(cv_model)
     plot_shap_graphs(shap_values, X_test)
+    plot_dependence(shap_values, X_test)
     plot_dependence(shap_values, X_test)
