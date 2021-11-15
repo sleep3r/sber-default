@@ -38,12 +38,7 @@ def st_shap(plot, height=None):
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
-def plot_graphs(shap_values, X_test, explainer, submit):
-    if submit:
-        st.subheader('Model Prediction Interpretation Plot')
-        p = shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :])
-        st_shap(p, height=150)
-
+def plot_graphs(shap_values, X_test):
     st.subheader('Summary Plot 1')
     fig, ax = plt.subplots(nrows=1, ncols=1)
     shap.summary_plot(shap_values[1], X_test)
@@ -53,6 +48,13 @@ def plot_graphs(shap_values, X_test, explainer, submit):
     fig, ax = plt.subplots(nrows=1, ncols=1)
     shap.summary_plot(shap_values[1], X_test, plot_type='bar')
     st.pyplot(fig)
+
+
+def plot_prediction(submit, explainer):
+    if submit:
+        st.subheader('Model Prediction Interpretation Plot')
+        p = shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :])
+        st_shap(p, height=150)
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
@@ -85,8 +87,10 @@ st.sidebar.header('Company features')
 if model_type == "fin":
     json_data, submit = fin_input()
     shap_values, X_test, explainer = explain_model("/app/checkpoints/fin")
+    plot_prediction(submit, explainer)
     plot_graphs(shap_values, X_test, explainer, submit)
 else:
     json_data, submit = no_fin_input()
     shap_values, X_test, explainer = explain_model("/app/checkpoints/no_fin")
+    plot_prediction(submit, explainer)
     plot_graphs(shap_values, X_test, explainer, submit)
