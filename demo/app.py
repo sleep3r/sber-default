@@ -50,7 +50,7 @@ def plot_graphs(shap_values, X_test):
     st.pyplot(fig)
 
 
-def plot_prediction(submit, explainer):
+def plot_prediction(submit, explainer, X_test, shap_values):
     if submit:
         st.subheader('Model Prediction Interpretation Plot')
         p = shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :])
@@ -87,10 +87,10 @@ st.sidebar.header('Company features')
 if model_type == "fin":
     json_data, submit = fin_input()
     shap_values, X_test, explainer = explain_model("/app/checkpoints/fin")
-    plot_prediction(submit, explainer)
+    plot_prediction(submit, explainer, X_test, shap_values)
     plot_graphs(shap_values, X_test, explainer, submit)
 else:
     json_data, submit = no_fin_input()
     shap_values, X_test, explainer = explain_model("/app/checkpoints/no_fin")
-    plot_prediction(submit, explainer)
+    plot_prediction(submit, explainer, X_test, shap_values)
     plot_graphs(shap_values, X_test, explainer, submit)
