@@ -1,12 +1,11 @@
 from functools import reduce
 from pathlib import Path
 
-import lightgbm as lgb
 import numpy as np
 import pandas as pd
+import lightgbm as lgb
 import streamlit as st
 import shap
-import streamlit.components.v1 as components
 import matplotlib.pyplot as plt
 
 from model import LGBMCVModel
@@ -20,14 +19,9 @@ def input(cv_model: LGBMCVModel, model_type: str):
     input_features = {}
     form = st.sidebar.form(key=model_type)
     for feature_name in [*cv_model.models.values()][0].feature_name():
-        input_features[feature_name] = form.number_input(feature_name)
+        input_features[feature_name] = form.number_input(feature_name, value=np.nan)
     submit = form.form_submit_button('Get predictions')
     return [input_features], submit
-
-
-def st_shap(plot, height=None):
-    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
-    components.html(shap_html, height=height)
 
 
 def plot_shap_graphs(shap_values, X_test):
@@ -45,9 +39,11 @@ def plot_shap_graphs(shap_values, X_test):
 def plot_prediction(submit, explainer, X_test, shap_values):
     if submit:
         st.subheader('Model Prediction Interpretation Plot')
-        fig, ax = plt.subplots(nrows=1, ncols=1)
-        shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :], matplotlib=True)
-        st.pyplot(fig)
+        shap.force_plot(
+            explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :],
+            matplotlib=True, show=False, figsize=(26, 4)
+        )
+        st.pyplot(bbox_inches='tight', dpi=300, pad_inches=0)
 
 
 def plot_model(cv_model):
@@ -60,7 +56,7 @@ def plot_model(cv_model):
     )
     fig = plt.gcf()
     fig.set_size_inches(20, 15)
-    st.pyplot(fig)
+    st.pyplot(fig, dpi=300)
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
