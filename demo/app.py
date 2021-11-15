@@ -19,7 +19,7 @@ st.write('''Realtime scoring API default prediction model''')
 def input(cv_model: LGBMCVModel, model_type: str):
     input_features = {}
     form = st.sidebar.form(key=model_type)
-    for feature_name in [*cv_model.models.values()][0]:
+    for feature_name in [*cv_model.models.values()][0].feature_name():
         input_features[feature_name] = form.number_input(feature_name)
     submit = form.form_submit_button('Get predictions')
     return [input_features], submit
@@ -45,8 +45,9 @@ def plot_shap_graphs(shap_values, X_test):
 def plot_prediction(submit, explainer, X_test, shap_values):
     if submit:
         st.subheader('Model Prediction Interpretation Plot')
-        p = shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :])
-        st_shap(p, height=150)
+        fig, ax = plt.subplots(nrows=1, ncols=1)
+        shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :], matplotlib=True)
+        st.pyplot(fig)
 
 
 def plot_model(cv_model):
