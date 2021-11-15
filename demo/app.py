@@ -16,19 +16,11 @@ st.title('GSBxSber Hackathon Demo')
 st.write('''Realtime scoring API default prediction model''')
 
 
-def fin_input():
+def input(cv_model: LGBMCVModel, model_type: str):
     input_features = {}
-    form = st.sidebar.form(key="fin_form")
-    input_features["ul_capital_sum"] = form.number_input('ul_capital_sum', 0, step=1)
-    input_features["ul_founders_cnt"] = form.number_input('ul_founders_cnt', 0, step=1)
-    submit = form.form_submit_button('Get predictions')
-    return [input_features], submit
-
-
-def no_fin_input():
-    input_features = {}
-    form = st.sidebar.form(key="no_fin_form")
-    input_features["ul_capital_sum"] = form.number_input('ul_capital_sum', 0, step=1)
+    form = st.sidebar.form(key=model_type)
+    for feature_name in [*cv_model.models.values()][0]:
+        input_features[feature_name] = form.number_input(feature_name)
     submit = form.form_submit_button('Get predictions')
     return [input_features], submit
 
@@ -98,19 +90,19 @@ def explain_model(checkpoint_path: str):
 model_type = st.sidebar.selectbox("Model:", ['fin', 'no_fin'])
 st.sidebar.header('Company features')
 if model_type == "fin":
-    json_data, submit = fin_input()
     shap_values, X_test, explainer, cv_model = explain_model(
         "/app/checkpoints/fin"
     )
+    json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
     plot_shap_graphs(shap_values, X_test)
     plot_model(cv_model)
 
 else:
-    json_data, submit = no_fin_input()
     shap_values, X_test, explainer, cv_model = explain_model(
         "/app/checkpoints/no_fin"
     )
+    json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
     plot_shap_graphs(shap_values, X_test)
     plot_model(cv_model)
