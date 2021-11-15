@@ -83,9 +83,9 @@ model_type = st.sidebar.selectbox("Model:", ['fin', 'no_fin'])
 st.sidebar.header('Company features')
 if model_type == "fin":
     json_data, submit = fin_input()
-    shap_values, X_test, explainer = explain_model("/Users/alexander/DataspellProjects/sber-default/checkpoints/fin")
+    shap_values, X_test, explainer = explain_model("~/checkpoints/fin")
     plot_graphs(shap_values, X_test, explainer, submit)
 else:
     json_data, submit = no_fin_input()
-    shap_values, X_test, explainer = explain_model("/Users/alexander/DataspellProjects/sber-default/checkpoints/no_fin")
+    shap_values, X_test, explainer = explain_model("~/checkpoints/no_fin")
     plot_graphs(shap_values, X_test, explainer, submit)
