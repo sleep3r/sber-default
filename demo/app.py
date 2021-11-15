@@ -41,7 +41,7 @@ def plot_prediction(submit, explainer, X_test, shap_values):
         st.subheader('Model Prediction Interpretation Plot')
         shap.force_plot(
             explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :],
-            matplotlib=True, show=False, figsize=(26, 4)
+            matplotlib=True, show=False, figsize=(28, 4)
         )
         st.pyplot(bbox_inches='tight', dpi=300, pad_inches=0)
 
