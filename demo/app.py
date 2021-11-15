@@ -113,3 +113,4 @@ else:
     )
     plot_prediction(submit, explainer, X_test, shap_values)
     plot_shap_graphs(shap_values, X_test)
+    plot_model(cv_model)
