@@ -1,3 +1,4 @@
+import gc
 from functools import reduce
 from pathlib import Path
 
@@ -127,3 +128,5 @@ else:
 del cv_model
 del X_test
 del shap_values
+
+gc.collect()
