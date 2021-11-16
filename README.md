@@ -3,9 +3,11 @@
 Sberbank default hackathon solution
 
 <div align="center">
-  [![GSB](https://dsbattle.com/hackathons/assets/images/ava.png)](https://dsbattle.com/hackathons/gsb/)
+<a href="https://dsbattle.com/hackathons/gsb/">
+  <img alt="GSB" src="https://sun9-54.userapi.com/impg/c855336/v855336778/255a81/9LMxl2RTeSA.jpg?size=1074x480&quality=96&proxy=1&sign=b5d8bbd54fef807fe691e74e1175adac&type=share">
+</a>
 
-  <a href="https://sber-default-demo.herokuapp.com"><h2>--> Interactive Demo <--</h2></a>
+<a href="https://sber-default-demo.herokuapp.com"><h2>--> Interactive Demo <--</h2></a>
 </div>
   
 ## Install:
