@@ -40,10 +40,11 @@ class DefaultTransformer:
         return column_transformer
 
     def _fit_transform(self, x, x_test, column_transformer) -> (pd.DataFrame, pd.DataFrame):
-        x = column_transformer.fit_transform(x)
+        column_transformer.fit(x)
+        x = column_transformer.transform(x)
         x = self._make_df(x, column_transformer)
 
-        x_test = column_transformer.fit_transform(x_test)
+        x_test = column_transformer.transform(x_test)
         x_test = self._make_df(x_test, column_transformer)
         return x, x_test
 
