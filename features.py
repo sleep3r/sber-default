@@ -89,6 +89,14 @@ class DefaultGenerator:
         X['r_25_a'] = TL / TA
         X['r_26_a'] = (X.ab_accounts_receivable + X.ab_cash_and_securities) / TA
         X['r_27_a'] = CA / STD
+
+        X['r_28_a'] = FCA / STD
+        X['r_29_a'] = GY / TA
+        X['r_30_a'] = X.ar_revenue / (X.ab_accounts_receivable + X.ab_cash_and_securities)
+        X['r_31_a'] = X.ar_revenue / (X.ab_accounts_receivable + X.ab_cash_and_securities + X.ab_inventory)
+
+        X["n_1"] = X.ogrn_age ** 2 - X.adr_actual_age ** 2
+        X["n_2"] = X.ul_capital_sum / X.ul_founders_cnt
         return X
 
     def generate_features(self) -> (pd.DataFrame, pd.DataFrame):

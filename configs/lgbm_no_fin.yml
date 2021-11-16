@@ -1,12 +1,12 @@
-exp_name: "lgbm_nofin"
-work_dir: "/Users/alexander/Desktop/HSE/ML/Sber_hack/runs"
+exp_name: lgbm_nofin
+work_dir: /Users/alexander/Desktop/HSE/ML/Sber_hack/runs
 seed: 45657
 
 dataset:
-  train_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-train.csv"
-  test_path: "https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-test.csv"
+  train_path: https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-train.csv
+  test_path: https://raw.githubusercontent.com/BKHV/risk_models/master/data/PD-data-test.csv
 
-  target_name: "default_12m"
+  target_name: default_12m
 
 #  [ 'ar_revenue', 'ar_total_expenses', 'ar_sale_cost', 'ar_selling_expenses',
 #    'ar_management_expenses', 'ar_sale_profit', 'ar_balance_of_rvns_and_expns',
@@ -22,60 +22,61 @@ dataset:
 
 
 features_generation: # (!!!) don't forget to add generated columns to preprocessing
-  has_na: null # adds 'has_na' column if true
+  has_na:      # adds 'has_na' column if true
   duplicates: group # adds 'duplicates_group' column if group
-  mark_fin: null # adds 'has_fin' by no nan rows of column specified
+  mark_fin:      # adds 'has_fin' by no nan rows of column specified
   mark_nofin: ar_revenue # adds 'no_fin' by nan rows of column specified
 
 
 preprocessing:
-  replace_inf: null
-  process_na: null # drop to drop or keep to keep only na or null to do nothing
+  replace_inf:
+  process_na:      # drop to drop or keep to keep only na or null to do nothing
   select_rows: no_fin # selects only rows if selected col is specified
 
-  cat_features: [ ]
+  cat_features: [ ul_staff_range ]
   cont_features: [ ]
   skewed_features: [ ]
   other_features: [
-      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
-      'ab_cash_and_securities', 'ab_own_capital',
-      'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-      'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a',
+      ul_capital_sum,
+      ul_founders_cnt,
+      ogrn_age,
+      adr_actual_age,
 
-      'duplicates_group', "no_fin"
+      duplicates_group, no_fin
   ]
-  drop_features: [ "record_id", ]
+  drop_features: [ record_id ]
 
   scaler:
-    type: "sklearn.preprocessing.RobustScaler"
+    type: sklearn.preprocessing.RobustScaler
     params: { }
   imputer:
-    type: "sklearn.impute.SimpleImputer"
+    type: sklearn.impute.SimpleImputer
     params:
-      strategy: "median"
+      strategy: median
   encoder:
-    type: "sklearn.preprocessing.OneHotEncoder"
+    type: sklearn.preprocessing.OneHotEncoder
     params:
-      handle_unknown: 'ignore'
+      handle_unknown: ignore
   normalizer:
-    type: "sklearn.preprocessing.QuantileTransformer"
+    type: sklearn.preprocessing.QuantileTransformer
     params:
       n_quantiles: 100
-      output_distribution: "normal"
+      output_distribution: normal
 
 
 features_selection:
   selected: [
-      'ul_capital_sum', 'ul_founders_cnt', 'ogrn_age', 'ab_other_current_assets',
-      'ab_cash_and_securities', 'ab_own_capital',
-      'adr_actual_age', 'r_25_a', 'ab_inventory', 'r_1_a',
-      'ab_other_borrowings', 'r_2_a', 'ar_profit_before_tax', 'ar_balance_of_rvns_and_expns', 'r_26_a'
+#      ul_staff_range_100-500, ul_staff_range_500, ul_staff_range_1-100,
+      ul_capital_sum,
+      ul_founders_cnt,
+      ogrn_age,
+      adr_actual_age,
   ]
 
 
 model:
   type: lightgbm.LGBMClassifier
-  eval_set_param: "eval_set"
+  eval_set_param: eval_set
   params:
     boosting_type: gbdt
     objective: binary
@@ -95,7 +96,7 @@ model:
 
 
 validation:
-  cutoff: 0.05
+  cutoff: 0.1
   test_size: 0.2
 
   cv_params:
