@@ -2,9 +2,8 @@
 
 Sberbank default hackathon solution
 
-<a href="https://dsbattle.com/hackathons/gsb/">
-  <img alt="GSB" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png" width=600" height="450">
-</a>
+[![GSB](https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png)](https://dsbattle.com/hackathons/gsb/)
+
 
 ## Install:
 
