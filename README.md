@@ -1,12 +1,13 @@
 # sber-default
 
-Sberbank default hackathon solution
+<div align="center">
+  Sberbank default hackathon solution
 
-[![GSB](https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png)](https://dsbattle.com/hackathons/gsb/)
+  [![GSB](https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png)](https://dsbattle.com/hackathons/gsb/)
 
-<a href="https://sber-default-demo.herokuapp.com"><h2 style="text-align:center">--> Interactive Demo <--</h2></a>
-
-
+  <a href="https://sber-default-demo.herokuapp.com"><h2>--> Interactive Demo <--</h2></a>
+</div>
+  
 ## Install:
 
 ```shell
