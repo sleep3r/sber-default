@@ -4,7 +4,7 @@ Sberbank default hackathon solution
 
 <div align="center">
 <a href="https://dsbattle.com/hackathons/gsb/">
-  <img alt="GSB" src="https://investvlg.ru/800/600/https/www.rbg24.ru/images/news/6664_kobi-kredileme-2013-yilindan-sonra-artis-gostedi_0.JPG">
+  <img alt="GSB" style="height: 80%; width: 80%;" src="https://investvlg.ru/800/600/https/www.rbg24.ru/images/news/6664_kobi-kredileme-2013-yilindan-sonra-artis-gostedi_0.JPG">
 </a>
 
 <a href="https://sber-default-demo.herokuapp.com"><h2>--> Interactive Demo <--</h2></a>
