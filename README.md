@@ -4,6 +4,8 @@ Sberbank default hackathon solution
 
 [![GSB](https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png)](https://dsbattle.com/hackathons/gsb/)
 
+<a href="https://sber-default-demo.herokuapp.com"><h2 style="text-align:center">--> Interactive Demo <--</h2></a>
+
 
 ## Install:
 
@@ -20,9 +22,11 @@ streamlit run demo/app.py
 ## Training:
 
 ```shell
-python train.py --config=./configs/forest.yml \
-                --work_dir=/home/sleep3r/sberruns \
-                --validation.cutoff=0.04
+python train.py --config=./configs/lgbm_fin.yml \
+                --work_dir=/home/sleep3r/sberruns 
+                
+python train.py --config=./configs/lgbm_no_fin.yml \
+                --work_dir=/home/sleep3r/sberruns 
 ```
 
 ## Grid training from Terminal:
@@ -32,7 +36,7 @@ declare -a penaltyes=("l1" "l2")
 
 for penalty in "${penaltyes[@]}"                                            
 do
-    python3 train.py --config=./configs/baseline.yml \
+    python3 train.py --config=./configs/logreg.yml \
                      --model.params.penalty="$penalty"
 done
 ```
@@ -40,7 +44,7 @@ done
 ```shell
 for C in 1 2                                           
 do
-    python3 train.py --config=./configs/baseline.yml \
+    python3 train.py --config=./configs/logreg.yml \
                      --model.params.C $C
 done
 ```
