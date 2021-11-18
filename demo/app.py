@@ -163,7 +163,7 @@ model_type = st.sidebar.selectbox("Model:", ['fin', 'no_fin'])
 st.sidebar.header('Company features')
 if model_type == "fin":
     shap_values, X_test, explainer, cv_model = explain_model(
-        "/Users/alexander/DataspellProjects/sber-default/checkpoints/fin"
+        "/app/checkpoints/fin"
     )
     json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
@@ -173,7 +173,7 @@ if model_type == "fin":
     plot_dependence(shap_values, X_test)
 else:
     shap_values, X_test, explainer, cv_model = explain_model(
-        "/Users/alexander/DataspellProjects/sber-default/checkpoints/no_fin"
+        "/app/checkpoints/no_fin"
     )
     json_data, submit = input(cv_model, model_type)
     plot_prediction(submit, explainer, X_test, shap_values)
