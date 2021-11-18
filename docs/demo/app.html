@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>sber-default.demo.app API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>sber-default.demo.app</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import gc
+from functools import reduce
+from pathlib import Path
+from typing import List, Type
+
+import numpy as np
+import pandas as pd
+import lightgbm as lgb
+import streamlit as st
+import shap
+import matplotlib.pyplot as plt
+
+from demo.model import LGBMCVModel
+
+st.set_page_config(page_title=&#34;GSBxSber Hackathon Demo&#34;)
+st.title(&#39;GSBxSber Hackathon Demo&#39;)
+st.write(&#39;&#39;&#39;Realtime scoring API default prediction model&#39;&#39;&#39;)
+
+
+def input(cv_model: LGBMCVModel, model_type: str) -&gt; (List[dict], bool):
+    &#34;&#34;&#34;
+    Sets features input fields based on model
+
+    Args:
+        cv_model (LGBMCVModel): cross-validated model;
+        model_type (str): model type.
+    Returns:
+        input_features (List[dict]): list of input fields;
+        submit (bool): submit button state.
+    &#34;&#34;&#34;
+    input_features = {}
+    form = st.sidebar.form(key=model_type)
+    for feature_name in [*cv_model.models.values()][0].feature_name():
+        input_features[feature_name] = form.number_input(feature_name, value=np.nan)
+    submit = form.form_submit_button(&#39;Get predictions&#39;)
+    return [input_features], submit
+
+
+def plot_shap_graphs(shap_values: np.ndarray, X_test: pd.DataFrame) -&gt; None:
+    &#34;&#34;&#34;
+    Plots all SHAP graphs.
+
+    Args:
+        shap_values (np.ndarray): SHAP values;
+        X_test (pd.DataFrame): test set.
+    &#34;&#34;&#34;
+    st.subheader(&#39;SHAP Summary Plot&#39;)
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    shap.summary_plot(shap_values[1], X_test)
+    st.pyplot(fig)
+
+    st.subheader(&#39;SHAP Summary Bar Plot&#39;)
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    shap.summary_plot(shap_values[1], X_test, plot_type=&#39;bar&#39;)
+    st.pyplot(fig)
+
+
+def plot_prediction(
+        submit: bool,
+        explainer: Type[shap.Explainer],
+        X_test: pd.DataFrame,
+        shap_values: np.ndarray
+) -&gt; None:
+    &#34;&#34;&#34;
+    Plots SHAP interpretation plot.
+
+    Args:
+        submit (bool): submit button state;
+        explainer (Type[shap.Explainer]): explainer object;
+        X_test (pd.DataFrame): test set;
+        shap_values (np.ndarray): SHAP values.
+    &#34;&#34;&#34;
+    if submit:
+        st.subheader(&#39;Model Prediction Interpretation Plot&#39;)
+        shap.force_plot(
+            explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :],
+            matplotlib=True, show=False, figsize=(28, 4)
+        )
+        st.pyplot(bbox_inches=&#39;tight&#39;, dpi=300, pad_inches=0)
+
+
+def plot_importance(cv_model: LGBMCVModel) -&gt; None:
+    &#34;&#34;&#34;
+    Plots SHAP feature importance plots.
+
+    Args:
+        cv_model (LGBMCVModel): cross-validated model.
+    &#34;&#34;&#34;
+    st.subheader(&#39;Feature Importance&#39;)
+    importance_type = st.selectbox(&#39;Select the desired importance type&#39;, (&#39;auto&#39;, &#39;split&#39;, &#39;gain&#39;), index=0)
+    ax = lgb.plot_importance(
+        [*cv_model.models.values()][0],
+        importance_type=importance_type,
+    )
+    fig = plt.gcf()
+    st.pyplot(fig)
+
+
+def plot_model_tree(cv_model: LGBMCVModel) -&gt; None:
+    &#34;&#34;&#34;
+    Plots model boosting tree.
+
+    Args:
+        cv_model (LGBMCVModel): cross-validated model.
+    &#34;&#34;&#34;
+    st.subheader(&#39;Model Tree&#39;)
+    ax = lgb.plot_tree(
+        [*cv_model.models.values()][0],
+        tree_index=1,
+        show_info=[&#39;split_gain&#39;],
+        dpi=600
+    )
+    fig = plt.gcf()
+    st.pyplot(fig, dpi=600)
+
+
+def plot_dependence(shap_values: np.ndarray, X_test: pd.DataFrame) -&gt; None:
+    &#34;&#34;&#34;
+    Plots SHAP dependence plots for common features.
+
+    Args:
+        shap_values (np.ndarray): SHAP values;
+        X_test (pd.DataFrame): test set.
+    &#34;&#34;&#34;
+    for feature_name in X_test.columns:
+        shap.dependence_plot(feature_name, shap_values[1], X_test, show=False)
+        st.pyplot()
+        plt.clf()
+
+
+@st.cache(suppress_st_warning=True, show_spinner=False)
+def explain_model(checkpoint_path: str) -&gt; (np.ndarray, pd.DataFrame, Type[shap.Explainer], LGBMCVModel):
+    &#34;&#34;&#34;
+    Base func for model init and SHAP explanation run.
+
+    Args:
+        checkpoint_path (str): path to model checkpoint files.
+    &#34;&#34;&#34;
+    cv_model = LGBMCVModel(checkpoint_path)
+    all_shap_values = []
+    test_sets = []
+
+    for model_name, fold_model in cv_model.models.items():
+        explainer = shap.TreeExplainer(fold_model)
+
+        X_test = pd.read_csv(Path(checkpoint_path) / f&#34;{model_name}.csv&#34;, index_col=0)
+        repl = {
+            np.inf: 0,
+            -np.inf: 0
+        }
+        X_test = X_test.replace(repl).copy()
+        shap_values = explainer.shap_values(X_test)
+
+        all_shap_values.append(shap_values)
+        test_sets.append(X_test)
+
+    X_test = reduce(lambda a, b: a.append(b), test_sets)
+    shap_values = np.concatenate(all_shap_values, axis=1)
+    return shap_values, X_test, explainer, cv_model
+
+
+model_type = st.sidebar.selectbox(&#34;Model:&#34;, [&#39;fin&#39;, &#39;no_fin&#39;])
+st.sidebar.header(&#39;Company features&#39;)
+if model_type == &#34;fin&#34;:
+    shap_values, X_test, explainer, cv_model = explain_model(
+        &#34;/Users/alexander/DataspellProjects/sber-default/checkpoints/fin&#34;
+    )
+    json_data, submit = input(cv_model, model_type)
+    plot_prediction(submit, explainer, X_test, shap_values)
+    plot_importance(cv_model)
+    plot_shap_graphs(shap_values, X_test)
+    plot_model_tree(cv_model)
+    plot_dependence(shap_values, X_test)
+else:
+    shap_values, X_test, explainer, cv_model = explain_model(
+        &#34;/Users/alexander/DataspellProjects/sber-default/checkpoints/no_fin&#34;
+    )
+    json_data, submit = input(cv_model, model_type)
+    plot_prediction(submit, explainer, X_test, shap_values)
+    plot_importance(cv_model)
+    plot_shap_graphs(shap_values, X_test)
+    plot_dependence(shap_values, X_test)
+    plot_dependence(shap_values, X_test)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="sber-default.demo.app.explain_model"><code class="name flex">
+<span>def <span class="ident">explain_model</span></span>(<span>checkpoint_path: str) ‑> (<class 'numpy.ndarray'>, <class 'pandas.core.frame.DataFrame'>, typing.Type[shap.explainers._explainer.Explainer], <class 'demo.model.LGBMCVModel'>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base func for model init and SHAP explanation run.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>checkpoint_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>path to model checkpoint files.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@st.cache(suppress_st_warning=True, show_spinner=False)
+def explain_model(checkpoint_path: str) -&gt; (np.ndarray, pd.DataFrame, Type[shap.Explainer], LGBMCVModel):
+    &#34;&#34;&#34;
+    Base func for model init and SHAP explanation run.
+
+    Args:
+        checkpoint_path (str): path to model checkpoint files.
+    &#34;&#34;&#34;
+    cv_model = LGBMCVModel(checkpoint_path)
+    all_shap_values = []
+    test_sets = []
+
+    for model_name, fold_model in cv_model.models.items():
+        explainer = shap.TreeExplainer(fold_model)
+
+        X_test = pd.read_csv(Path(checkpoint_path) / f&#34;{model_name}.csv&#34;, index_col=0)
+        repl = {
+            np.inf: 0,
+            -np.inf: 0
+        }
+        X_test = X_test.replace(repl).copy()
+        shap_values = explainer.shap_values(X_test)
+
+        all_shap_values.append(shap_values)
+        test_sets.append(X_test)
+
+    X_test = reduce(lambda a, b: a.append(b), test_sets)
+    shap_values = np.concatenate(all_shap_values, axis=1)
+    return shap_values, X_test, explainer, cv_model</code></pre>
+</details>
+</dd>
+<dt id="sber-default.demo.app.input"><code class="name flex">
+<span>def <span class="ident">input</span></span>(<span>cv_model: demo.model.LGBMCVModel, model_type: str) ‑> (typing.List[dict], <class 'bool'>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets features input fields based on model</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>cv_model</code></strong> :&ensp;<code>LGBMCVModel</code></dt>
+<dd>cross-validated model;</dd>
+<dt><strong><code>model_type</code></strong> :&ensp;<code>str</code></dt>
+<dd>model type.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>input_features (List[dict]): list of input fields;
+submit (bool): submit button state.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def input(cv_model: LGBMCVModel, model_type: str) -&gt; (List[dict], bool):
+    &#34;&#34;&#34;
+    Sets features input fields based on model
+
+    Args:
+        cv_model (LGBMCVModel): cross-validated model;
+        model_type (str): model type.
+    Returns:
+        input_features (List[dict]): list of input fields;
+        submit (bool): submit button state.
+    &#34;&#34;&#34;
+    input_features = {}
+    form = st.sidebar.form(key=model_type)
+    for feature_name in [*cv_model.models.values()][0].feature_name():
+        input_features[feature_name] = form.number_input(feature_name, value=np.nan)
+    submit = form.form_submit_button(&#39;Get predictions&#39;)
+    return [input_features], submit</code></pre>
+</details>
+</dd>
+<dt id="sber-default.demo.app.plot_dependence"><code class="name flex">
+<span>def <span class="ident">plot_dependence</span></span>(<span>shap_values: numpy.ndarray, X_test: pandas.core.frame.DataFrame) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots SHAP dependence plots for common features.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>shap_values</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>SHAP values;</dd>
+<dt><strong><code>X_test</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>test set.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_dependence(shap_values: np.ndarray, X_test: pd.DataFrame) -&gt; None:
+    &#34;&#34;&#34;
+    Plots SHAP dependence plots for common features.
+
+    Args:
+        shap_values (np.ndarray): SHAP values;
+        X_test (pd.DataFrame): test set.
+    &#34;&#34;&#34;
+    for feature_name in X_test.columns:
+        shap.dependence_plot(feature_name, shap_values[1], X_test, show=False)
+        st.pyplot()
+        plt.clf()</code></pre>
+</details>
+</dd>
+<dt id="sber-default.demo.app.plot_importance"><code class="name flex">
+<span>def <span class="ident">plot_importance</span></span>(<span>cv_model: demo.model.LGBMCVModel) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots SHAP feature importance plots.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>cv_model</code></strong> :&ensp;<code>LGBMCVModel</code></dt>
+<dd>cross-validated model.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_importance(cv_model: LGBMCVModel) -&gt; None:
+    &#34;&#34;&#34;
+    Plots SHAP feature importance plots.
+
+    Args:
+        cv_model (LGBMCVModel): cross-validated model.
+    &#34;&#34;&#34;
+    st.subheader(&#39;Feature Importance&#39;)
+    importance_type = st.selectbox(&#39;Select the desired importance type&#39;, (&#39;auto&#39;, &#39;split&#39;, &#39;gain&#39;), index=0)
+    ax = lgb.plot_importance(
+        [*cv_model.models.values()][0],
+        importance_type=importance_type,
+    )
+    fig = plt.gcf()
+    st.pyplot(fig)</code></pre>
+</details>
+</dd>
+<dt id="sber-default.demo.app.plot_model_tree"><code class="name flex">
+<span>def <span class="ident">plot_model_tree</span></span>(<span>cv_model: demo.model.LGBMCVModel) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots model boosting tree.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>cv_model</code></strong> :&ensp;<code>LGBMCVModel</code></dt>
+<dd>cross-validated model.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_model_tree(cv_model: LGBMCVModel) -&gt; None:
+    &#34;&#34;&#34;
+    Plots model boosting tree.
+
+    Args:
+        cv_model (LGBMCVModel): cross-validated model.
+    &#34;&#34;&#34;
+    st.subheader(&#39;Model Tree&#39;)
+    ax = lgb.plot_tree(
+        [*cv_model.models.values()][0],
+        tree_index=1,
+        show_info=[&#39;split_gain&#39;],
+        dpi=600
+    )
+    fig = plt.gcf()
+    st.pyplot(fig, dpi=600)</code></pre>
+</details>
+</dd>
+<dt id="sber-default.demo.app.plot_prediction"><code class="name flex">
+<span>def <span class="ident">plot_prediction</span></span>(<span>submit: bool, explainer: Type[shap.explainers._explainer.Explainer], X_test: pandas.core.frame.DataFrame, shap_values: numpy.ndarray) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots SHAP interpretation plot.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>submit</code></strong> :&ensp;<code>bool</code></dt>
+<dd>submit button state;</dd>
+<dt><strong><code>explainer</code></strong> :&ensp;<code>Type[shap.Explainer]</code></dt>
+<dd>explainer object;</dd>
+<dt><strong><code>X_test</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>test set;</dd>
+<dt><strong><code>shap_values</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>SHAP values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_prediction(
+        submit: bool,
+        explainer: Type[shap.Explainer],
+        X_test: pd.DataFrame,
+        shap_values: np.ndarray
+) -&gt; None:
+    &#34;&#34;&#34;
+    Plots SHAP interpretation plot.
+
+    Args:
+        submit (bool): submit button state;
+        explainer (Type[shap.Explainer]): explainer object;
+        X_test (pd.DataFrame): test set;
+        shap_values (np.ndarray): SHAP values.
+    &#34;&#34;&#34;
+    if submit:
+        st.subheader(&#39;Model Prediction Interpretation Plot&#39;)
+        shap.force_plot(
+            explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :],
+            matplotlib=True, show=False, figsize=(28, 4)
+        )
+        st.pyplot(bbox_inches=&#39;tight&#39;, dpi=300, pad_inches=0)</code></pre>
+</details>
+</dd>
+<dt id="sber-default.demo.app.plot_shap_graphs"><code class="name flex">
+<span>def <span class="ident">plot_shap_graphs</span></span>(<span>shap_values: numpy.ndarray, X_test: pandas.core.frame.DataFrame) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots all SHAP graphs.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>shap_values</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>SHAP values;</dd>
+<dt><strong><code>X_test</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>test set.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_shap_graphs(shap_values: np.ndarray, X_test: pd.DataFrame) -&gt; None:
+    &#34;&#34;&#34;
+    Plots all SHAP graphs.
+
+    Args:
+        shap_values (np.ndarray): SHAP values;
+        X_test (pd.DataFrame): test set.
+    &#34;&#34;&#34;
+    st.subheader(&#39;SHAP Summary Plot&#39;)
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    shap.summary_plot(shap_values[1], X_test)
+    st.pyplot(fig)
+
+    st.subheader(&#39;SHAP Summary Bar Plot&#39;)
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    shap.summary_plot(shap_values[1], X_test, plot_type=&#39;bar&#39;)
+    st.pyplot(fig)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="sber-default.demo" href="index.html">sber-default.demo</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="sber-default.demo.app.explain_model" href="#sber-default.demo.app.explain_model">explain_model</a></code></li>
+<li><code><a title="sber-default.demo.app.input" href="#sber-default.demo.app.input">input</a></code></li>
+<li><code><a title="sber-default.demo.app.plot_dependence" href="#sber-default.demo.app.plot_dependence">plot_dependence</a></code></li>
+<li><code><a title="sber-default.demo.app.plot_importance" href="#sber-default.demo.app.plot_importance">plot_importance</a></code></li>
+<li><code><a title="sber-default.demo.app.plot_model_tree" href="#sber-default.demo.app.plot_model_tree">plot_model_tree</a></code></li>
+<li><code><a title="sber-default.demo.app.plot_prediction" href="#sber-default.demo.app.plot_prediction">plot_prediction</a></code></li>
+<li><code><a title="sber-default.demo.app.plot_shap_graphs" href="#sber-default.demo.app.plot_shap_graphs">plot_shap_graphs</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
