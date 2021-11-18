@@ -7,9 +7,10 @@ Sberbank default hackathon solution
   <img alt="GSB" style="height: 60%; width: 60%;" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png">
 </a>
 
+<a href="https://sleep3r.github.io/sber-default/index.html"><h2>--> Documentation <--</h2></a>
 <a href="https://sber-default-demo.herokuapp.com"><h2>--> Interactive Demo <--</h2></a>
 </div>
-  
+
 ## Install:
 
 ```shell
@@ -53,6 +54,7 @@ done
 ```
 
 ## Merge submits:
+
 ```shell
  python ./scripts/merge_submits.py --sub_path_1=/home/sleep3r/finsub.csv \
                                    --sub_path_2=/home/sleep3r/nofinsub.csv \
