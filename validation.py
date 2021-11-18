@@ -13,6 +13,16 @@ from config import MLConfig, object_from_dict
 
 
 def validate(probas: np.ndarray, y_val: np.ndarray, cutoff: float) -> Dict[str, float]:
+    """
+    Performs validation based on specified metrics to calc.
+
+    Args:
+        probas (np.ndarray): predicted probabilities;
+        y_val (np.ndarray): true labels;
+        cutoff (float): cutoff value.
+    Returns:
+        Dict[str, float]: dictionary with metrics.
+    """
     metrics = {}
     preds = (probas[:, 1] > cutoff).astype(int)
 
@@ -27,17 +37,35 @@ def validate(probas: np.ndarray, y_val: np.ndarray, cutoff: float) -> Dict[str, 
 
 
 class BaseCV:
+    """
+    Base cross-validation class. RIP to doc this, sorry.
+
+    Attributes:
+        cfg (MLConfig): configuration object;
+        X (np.ndarray): training data;
+        y (np.ndarray): labels;
+        train_features (np.ndarray): training features;
+        ...
+    """
+
     def __init__(
-            self, cfg: MLConfig,
-            X, y, train_features,
-            X_to_pred=None, y_for_split=None,
-            groups_for_split=None, weights=None, weights2=None,
-            out_metric=roc_auc_score, base_train_seed=42, num_train_seeds=1,
+            self,
+            cfg: MLConfig,
+            X, y,
+            train_features,
+            X_to_pred=None,
+            y_for_split=None, groups_for_split=None,
+            weights=None, weights2=None,
+            out_metric=roc_auc_score,
+            base_train_seed=42, num_train_seeds=1,
             model_params=None,
             k_fold_fn=None, fold_seed=15, nfolds=5,
             save_model_name='', model_folder='../models/', use_saved_model=False,
-            mask=0, mask_name='', train_kick_mask=np.array([]), verbose=True,
-            cat_features=None, fl_multiclass=False
+            mask=0, mask_name='',
+            train_kick_mask=np.array([]),
+            verbose=True,
+            cat_features=None,
+            fl_multiclass=False
     ):
         self.cfg = cfg
         self.X = X.copy()
@@ -67,6 +95,7 @@ class BaseCV:
         self.fl_multiclass = fl_multiclass
 
     def run(self):
+        """Main run method."""
         start_time_cross_val = time.time()
 
         if self.save_model_name != '':

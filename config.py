@@ -36,18 +36,33 @@ class MLConfig:
         return setattr(self.__cfg, key, value)
 
     def pretty_print(self) -> None:
+        """Prints config pretty-way."""
         yaml = YAML()
         yaml.dump(self.__yaml_config, sys.stdout)
 
-    def dump(self, path: str):
+    def dump(self, path: str) -> None:
+        """
+        Dumps config to file.
+
+        Args:
+            path (str): path to file.
+        """
         yaml = YAML()
 
         with open(path, "w") as f:
             yaml.dump(self.__yaml_config, f)
 
 
-def update_config(config: CommentedMap, params: dict):
-    """Updates base config with params from new one --config and some specified --params."""
+def update_config(config: CommentedMap, params: dict) -> CommentedMap:
+    """
+    Updates base config with params from new one --config and some specified --params.
+
+    Args:
+        config (ruamel.yaml.CommentedMap): base config;
+        params (dict): parsed params to update config.
+    Returns:
+        ruamel.yaml.CommentedMap: updated config.
+    """
     for k, v in params.items():
         *path, key = k.split(".")
 
@@ -82,7 +97,17 @@ def fit(**kwargs) -> CommentedMap:
     return update_cfg
 
 
-def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
+def object_from_dict(d: CfgDict, parent=None, **default_kwargs) -> object:
+    """
+    Loads python object from config dict.
+
+    Args:
+        d (CfgDict): config dict;
+        parent (Optional[object]): parent object;
+        default_kwargs (dict): default kwargs for object.
+    Returns:
+        object: loaded object.
+    """
     kwargs = dict(d).copy()
     object_type = kwargs.pop("type", None)
     if object_type is not None:
@@ -106,6 +131,7 @@ def object_from_dict(d: CfgDict, parent=None, **default_kwargs):
 
 
 def load_config() -> MLConfig:
+    """Base func for loading all configuration from terminal."""
     yaml_config: CommentedMap = fit(**Fire(lambda **kwargs: kwargs))
     cfg = MLConfig(yaml_config)
     return cfg

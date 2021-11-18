@@ -21,13 +21,30 @@ warnings.simplefilter('ignore')
 
 
 def create_workdir(cfg: MLConfig, meta: dict) -> dict:
+    """
+    Creates working directory for artifacts storage.
+
+    Args:
+        cfg (MLConfig): config object;
+        meta (dict): meta dictionary.
+    Returns:
+        dict: updated meta dictionary.
+    """
     dirname = f"{cfg.exp_name}_{datetime.now().strftime('%d.%m/%H.%M.%S')}"
     meta["exp_dir"] = Path(cfg.work_dir) / dirname
     mkdir_or_exist(meta["exp_dir"])
     return meta
 
 
-def env_collect(cfg: MLConfig, meta: dict) -> dict:
+def env_collect(meta: dict) -> dict:
+    """
+    Collects all environment data.
+
+    Args:
+        meta (dict): meta dictionary.
+    Returns:
+        dict: updated meta dictionary.
+    """
     env_info_dict = collect_env()
     env_info = '\n'.join([f'{k}: {v}' for k, v in env_info_dict.items()])
     dash_line = '-' * 60 + '\n'
@@ -38,12 +55,12 @@ def env_collect(cfg: MLConfig, meta: dict) -> dict:
     return meta
 
 
-def set_random_seed(seed: int = 228):
+def set_random_seed(seed: int = 123) -> None:
     """
     Sets random seed.
 
     Args:
-        seed (int): Seed to be used.
+        seed (int): seed to be used.
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -51,6 +68,15 @@ def set_random_seed(seed: int = 228):
 
 
 def determine_exp(cfg: MLConfig, meta: dict) -> dict:
+    """
+    Sets seed and experiment name.
+
+    Args:
+        cfg (MLConfig): config object;
+        meta (dict): meta dictionary.
+    Returns:
+        dict: updated meta dictionary.
+    """
     if cfg.seed is not None:
         print(f'\nSet random seed to {cfg.seed}')
         set_random_seed(cfg.seed)
@@ -61,6 +87,13 @@ def determine_exp(cfg: MLConfig, meta: dict) -> dict:
 
 
 def log_report(meta: dict, exp_dir: Path) -> None:
+    """
+    Logs artifact report.
+
+    Args:
+        meta (dict): meta dictionary;
+        exp_dir (Path): experiment directory.
+    """
     print("\nClassification report best model:")
     print(meta["metrics"].pop("clf_report"))
 
@@ -77,6 +110,17 @@ def log_report(meta: dict, exp_dir: Path) -> None:
 
 
 def make_submit(cfg, test_predictions: pd.DataFrame, X_test, cutoff: float) -> pd.DataFrame:
+    """
+    Makes submit dataframe.
+
+    Args:
+        cfg (MLConfig): config object;
+        test_predictions (pd.DataFrame): predictions;
+        X_test (pd.DataFrame): test data;
+        cutoff (float): cutoff value.
+    Returns:
+        pd.DataFrame: submit dataframe.
+    """
     probas = test_predictions.predictions.values
 
     if cfg.preprocessing.select_rows is not None:
@@ -90,16 +134,42 @@ def make_submit(cfg, test_predictions: pd.DataFrame, X_test, cutoff: float) -> p
 
 
 def log_dataset(X: pd.DataFrame, y: pd.Series, X_test: pd.DataFrame, exp_dir: Path) -> None:
+    """
+    Logs training and test data.
+
+    Args:
+        X (pd.DataFrame): training data;
+        y (pd.Series): target;
+        X_test (pd.DataFrame): test data;
+        exp_dir (Path): experiment directory.
+    """
     X["target"] = y.values
     X.to_csv(exp_dir / "data_train.csv", index=None)  # noqa
     X_test.to_csv(exp_dir / "data_test.csv", index=None)  # noqa
 
 
 def log_submit(submit_df: pd.DataFrame, exp_dir: Path) -> None:
+    """
+    Logs submit.
+
+    Args:
+        submit_df (pd.DataFrame): submit dataframe;
+        exp_dir (Path): experiment directory.
+    """
     submit_df.to_csv(exp_dir / 'submit.csv', index=False, sep=';')  # noqa
 
 
-def log_artifacts(meta: dict, X: pd.DataFrame, X_test, y, submit_df: pd.DataFrame) -> None:
+def log_artifacts(meta: dict, X: pd.DataFrame, X_test, y: pd.Series, submit_df: pd.DataFrame) -> None:
+    """
+    Logs all artifacts.
+
+    Args:
+        meta (dict): meta dictionary;
+        X (pd.DataFrame): training data;
+        X_test (pd.DataFrame): test data;
+        y (pd.Series): target;
+        submit_df (pd.DataFrame): submit dataframe.
+    """
     exp_dir = meta.pop("exp_dir")
 
     log_report(meta, exp_dir)
@@ -108,6 +178,14 @@ def log_artifacts(meta: dict, X: pd.DataFrame, X_test, y, submit_df: pd.DataFram
 
 
 def prepare_training(cfg: MLConfig) -> dict:
+    """
+    Makes all training preparations.
+
+    Args:
+        cfg (MLConfig): config object.
+    Returns:
+        dict: meta dictionary.
+    """
     meta = dict()
 
     # create work_dir
@@ -117,7 +195,7 @@ def prepare_training(cfg: MLConfig) -> dict:
     cfg.dump(meta["exp_dir"] / "config.yml")
 
     # log env info
-    env_collect(cfg, meta)
+    env_collect(meta)
 
     # log config
     cfg.pretty_print()
@@ -127,7 +205,13 @@ def prepare_training(cfg: MLConfig) -> dict:
     return meta
 
 
-def train_model(cfg: MLConfig):
+def train_model(cfg: MLConfig) -> None:
+    """
+    Base model train func.
+
+    Args:
+        cfg (MLConfig): config object.
+    """
     meta: dict = prepare_training(cfg)
 
     print("\nLoading dataset...")

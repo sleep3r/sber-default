@@ -7,6 +7,14 @@ from sklearn.impute import KNNImputer, SimpleImputer
 
 
 def get_column_names_from_ColumnTransformer(column_transformer: ColumnTransformer) -> List[str]:
+    """
+    Gets columns names from complex sklearn transformers.
+
+    Args:
+        column_transformer: sklearn.compose.ColumnTransformer.
+    Returns:
+        List[str]: list of column names.
+    """
     col_name = []
 
     for transformer_in_columns in column_transformer.transformers_[:-1]:

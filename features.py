@@ -1,21 +1,47 @@
-import numpy as np
 import pandas as pd
 
 from config import MLConfig
 
 
 class DefaultGenerator:
+    """
+    Base features generator class.
+
+    Attributes:
+        cfg (MLConfig): configuration;
+        X (pd.DataFrame): dataframe with train features;
+        X_test (pd.DataFrame): dataframe with test features.
+    """
+
     def __init__(self, cfg: MLConfig, X: pd.DataFrame, X_test: pd.DataFrame):
         self.cfg = cfg
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def __drop_duplicates(self, X: pd.DataFrame) -> pd.DataFrame:
-        subset = [col for col in X.columns if
-                  col not in self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]]
+    def drop_duplicates(self, X: pd.DataFrame) -> pd.DataFrame:
+        """
+        Drops duplicates keeping last.
+
+        Args:
+            X (pd.DataFrame): dataframe with train features.
+        Returns:
+            pd.DataFrame: dataframe with dropped duplicates.
+        """
+        skip_cols = self.cfg.preprocessing.drop_features + [self.cfg.dataset.target_name]
+        subset = [col for col in X.columns if col not in skip_cols]
         return X.drop_duplicates(subset, keep="last")
 
-    def __group_duplicates(self, X: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+    def group_duplicates(self, X: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+        """
+        Groups duplicates.
+
+        Args:
+            X (pd.DataFrame): dataframe with train features;
+            X_test (pd.DataFrame): dataframe with test features.
+        Returns:
+            pd.DataFrame: train dataframe with grouped duplicates;
+            pd.DataFrame: test dataframe with grouped duplicates.
+        """
         X['test_flg'] = 0
         X_test['test_flg'] = 1
 
@@ -33,7 +59,15 @@ class DefaultGenerator:
         X_test["duplicates_group"] = duplicates_group[X.shape[0]:].values
         return X.copy(), X_test.copy()
 
-    def _generate(self, X: pd.DataFrame) -> pd.DataFrame:
+    def generate(self, X: pd.DataFrame) -> pd.DataFrame:
+        """
+        Method with defined features to generate.
+
+        Args:
+            X (pd.DataFrame): dataframe with features.
+        Returns:
+            pd.DataFrame: dataframe with new generated features.
+        """
         X = X.copy()
 
         if self.cfg.features_generation.has_na:
@@ -100,23 +134,39 @@ class DefaultGenerator:
         return X
 
     def generate_features(self) -> (pd.DataFrame, pd.DataFrame):
-        X = self._generate(self.X)
-        X_test = self._generate(self.X_test)
+        """Base method for feature generation."""
+        X = self.generate(self.X)
+        X_test = self.generate(self.X_test)
 
         if self.cfg.features_generation.duplicates == "drop":
-            X = self.__drop_duplicates(X)
+            X = self.drop_duplicates(X)
         elif self.cfg.features_generation.duplicates == "group":
-            X, X_test = self.__group_duplicates(X, X_test)
+            X, X_test = self.group_duplicates(X, X_test)
         return X, X_test
 
 
 class DefaultSelector:
+    """
+    Base feature selector class.
+
+    Attributes:
+        cfg (MLConfig): config object;
+        X (pd.DataFrame): train data;
+        X_test (pd.DataFrame): test data.
+    """
+
     def __init__(self, cfg: MLConfig, X: pd.DataFrame, X_test: pd.DataFrame):
         self.cfg = cfg
         self.X = X.copy()
         self.X_test = X_test.copy()
 
-    def _select(self, X: pd.DataFrame):
+    def select(self, X: pd.DataFrame) -> pd.DataFrame:
+        """
+        Method with selection logic.
+
+        Args:
+            X (pd.DataFrame): data to select features from.
+        """
         X = X.copy()
         if self.cfg.features_selection.rename_columns is not None:
             X = X.rename(columns=dict(self.cfg.features_selection.rename_columns))
@@ -129,6 +179,7 @@ class DefaultSelector:
         return X_selected
 
     def select_features(self) -> (pd.DataFrame, pd.DataFrame):
-        X = self._select(self.X)
-        X_test = self._select(self.X_test)
+        """Base feature selection method."""
+        X = self.select(self.X)
+        X_test = self.select(self.X_test)
         return X, X_test
