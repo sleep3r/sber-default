@@ -1,7 +1,3 @@
-# sber-default
-
-Sberbank x GSB hackathon solution
-
 <div align="center">
 <a href="https://dsbattle.com/hackathons/gsb/">
   <img alt="GSB" style="height: auto; width: 55%;" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png">
