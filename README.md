@@ -4,7 +4,7 @@ Sberbank x GSB hackathon solution
 
 <div align="center">
 <a href="https://dsbattle.com/hackathons/gsb/">
-  <img alt="GSB" style="height: 60%; width: 60%;" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png">
+  <img alt="GSB" style="height: auto; width: 55%;" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png">
 </a>
 
 <a href="https://sleep3r.github.io/sber-default/index.html"><h3>--> Documentation <--</h3></a>
