@@ -1,6 +1,6 @@
 # sber-default
 
-Sberbank default hackathon solution
+Sberbank x GSB hackathon solution
 
 <div align="center">
 <a href="https://dsbattle.com/hackathons/gsb/">
