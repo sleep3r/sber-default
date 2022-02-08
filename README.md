@@ -7,9 +7,9 @@ Sberbank x GSB hackathon solution
   <img alt="GSB" style="height: 60%; width: 60%;" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png">
 </a>
 
-<a href="https://sleep3r.github.io/sber-default/index.html"><h2>--> Documentation <--</h2></a>
+<a href="https://sleep3r.github.io/sber-default/index.html"><h3>--> Documentation <--</h3></a>
   
-<a href="https://sber-default-demo.herokuapp.com"><h2>--> Interactive Demo <--</h2></a>
+<a href="https://sber-default-demo.herokuapp.com"><h3>--> Interactive Demo <--</h3></a>
 </div>
 
 ## Install:
