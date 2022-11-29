@@ -3,9 +3,6 @@
   <img alt="GSB" style="height: auto; width: 55%;" src="https://dsbattle.com/hackathons/gsb/assets/images/gsb-main.png">
 </a>
 
-<a href="https://sleep3r.github.io/sber-default/index.html"><h3>--> Documentation <--</h3></a>
-  
-<a href="https://sber-default-demo.herokuapp.com"><h3>--> Interactive Demo <--</h3></a>
 </div>
 
 ## Install:
